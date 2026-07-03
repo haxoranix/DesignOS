@@ -1,0 +1,4735 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Design System Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Cabin:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Epilogue:wght@400;500;600;700;800&family=Fraunces:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&family=Montserrat:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&family=Prata&family=Raleway:wght@400;500;600;700;800&family=Roboto+Slab:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Source+Serif+4:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --app-bg: #080b12;
+      --app-panel: rgba(255,255,255,.72);
+      --app-ink: #0f172a;
+      --app-muted: #6b7280;
+      --app-soft: #f4f6fb;
+      --app-line: rgba(15,23,42,.10);
+      --app-dark-line: rgba(255,255,255,.12);
+      --brand-a: #6d5dfc;
+      --brand-b: #20c7b1;
+      --shadow-xl: 0 30px 100px rgba(15,23,42,.20);
+      --shadow-sm: 0 10px 30px rgba(15,23,42,.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% -10%, rgba(109,93,252,.32), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(32,199,177,.18), transparent 30%),
+        linear-gradient(180deg, #eef2ff 0%, #f8fafc 35%, #ffffff 100%);
+      color: var(--app-ink);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    button, select, input, textarea { font: inherit; }
+    button { border: 0; }
+    .app { min-height: 100vh; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 22px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--app-line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+      box-shadow: 0 14px 35px rgba(109,93,252,.28);
+    }
+    .brand h1 { margin: 0; font-size: 16px; letter-spacing: -.04em; }
+    .brand p { display: none; }
+    .top-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      min-width: 220px;
+    }
+    .top-search {
+      width: min(520px, 100%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      border: 1px solid var(--app-line);
+      background: rgba(255,255,255,.72);
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+    }
+    .top-search span { color: var(--app-muted); font-size: 13px; }
+    .top-search input {
+      border: 0;
+      outline: none;
+      width: 100%;
+      background: transparent;
+      color: var(--app-ink);
+      font-size: 13px;
+    }
+    .top-actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; flex-wrap: wrap; }
+    .utility-btn, .toggle-btn {
+      min-height: 38px;
+      border: 1px solid var(--app-line);
+      color: var(--app-ink);
+      background: rgba(255,255,255,.72);
+      border-radius: 999px;
+      padding: 9px 13px;
+      cursor: pointer;
+      transition: .18s ease;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(15,23,42,.05);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .utility-btn:hover, .toggle-btn:hover { transform: translateY(-1px); border-color: rgba(109,93,252,.35); }
+    .utility-btn.primary { background: #111827; border-color: #111827; color: white; }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 18px;
+      padding: 18px;
+      max-width: 1720px;
+      margin: 0 auto;
+    }
+    .sidebar {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      max-height: calc(100vh - 94px);
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.64);
+      border-radius: 28px;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(26px);
+      box-shadow: var(--shadow-xl);
+      scrollbar-width: thin;
+    }
+    .panel-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 12px;
+    }
+    .panel-title h2 {
+      margin:0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--app-muted);
+    }
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--app-line);
+      border-radius:999px;
+      padding:5px 8px;
+      color:var(--app-muted);
+      font-size:11px;
+      background: rgba(255,255,255,.58);
+    }
+    .control { display: grid; gap: 6px; margin: 0 0 10px; }
+    .control label { font-size: 11px; color: var(--app-muted); font-weight: 750; letter-spacing: .02em; }
+    .control select, .control input {
+      width: 100%;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(248,250,252,.88);
+      color: var(--app-ink);
+      border-radius: 15px;
+      padding: 11px 12px;
+      outline: none;
+      min-height: 42px;
+      font-size: 13px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .control select:focus, .control input:focus { border-color: rgba(109,93,252,.48); box-shadow: 0 0 0 4px rgba(109,93,252,.10); }
+    .control select option { color: #111827; background: #ffffff; }
+    .primary-select select {
+      min-height: 50px;
+      font-weight: 800;
+      background: #111827;
+      color: #ffffff;
+      border-color: #111827;
+    }
+    .primary-select select option { color: #111827; background: #ffffff; }
+    details.control-group {
+      border: 1px solid var(--app-line);
+      background: rgba(255,255,255,.46);
+      border-radius: 20px;
+      padding: 8px;
+      margin-top: 10px;
+    }
+    details.control-group summary {
+      list-style: none;
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 7px 8px;
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: -.01em;
+      color: #111827;
+    }
+    details.control-group summary::-webkit-details-marker { display:none; }
+    details.control-group summary::after {
+      content: "+";
+      width: 22px;
+      height: 22px;
+      display:grid;
+      place-items:center;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+    details.control-group[open] summary::after { content: "−"; }
+    .quick-stack { display: grid; gap: 10px; }
+    .info-card {
+      border:1px solid var(--app-line);
+      background: rgba(255,255,255,.52);
+      border-radius:20px;
+      padding:12px;
+      margin: 10px 0 0;
+    }
+    .fit-card-main .mini-label, .mini-label {
+      display:block;
+      color: var(--app-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 850;
+      margin-bottom: 5px;
+    }
+    .fit-card-main h3 { margin: 0; font-size: 18px; letter-spacing: -.05em; }
+    .fit-card-main p { margin: 5px 0 0; color: var(--app-muted); font-size: 12px; line-height: 1.45; }
+    .chip-line { display:flex; gap:6px; flex-wrap:wrap; margin-top: 12px; }
+    .chip-line span, .small-pill {
+      border:1px solid var(--app-line);
+      background: #f8fafc;
+      color: #475569;
+      border-radius:999px;
+      padding:6px 8px;
+      font-size:11px;
+      font-weight: 700;
+    }
+    .info-split { display:grid; grid-template-columns: 1fr auto; gap: 12px; align-items:center; }
+    .info-split strong { display:block; font-size: 13px; letter-spacing: -.02em; }
+    .info-split small { display:block; color: var(--app-muted); font-size: 11px; margin-top: 3px; line-height: 1.35; }
+    .quiet-note { color: var(--app-muted); font-size: 11px; line-height: 1.45; margin-top: 10px; }
+    .swatch-row { display:flex; align-items:center; gap: 5px; }
+    .swatch-row span { width: 18px; height: 18px; border-radius: 999px; border: 2px solid rgba(255,255,255,.9); box-shadow: 0 0 0 1px rgba(15,23,42,.08); }
+    .count-note { display:none; }
+    .preview-area { min-width: 0; display:grid; gap: 14px; }
+    .preview-toolbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      border:1px solid rgba(255,255,255,.64);
+      border-radius:28px;
+      padding:12px 14px;
+      background: rgba(255,255,255,.70);
+      backdrop-filter: blur(26px);
+      box-shadow: var(--shadow-sm);
+    }
+    .preview-toolbar h2 { margin:0; font-size: 16px; letter-spacing: -.04em; }
+    .preview-toolbar p { margin:3px 0 0; color:var(--app-muted); font-size:12px; }
+    .toggle-group { display:flex; gap:7px; flex-wrap:wrap; }
+    .toggle-btn.active { background: #111827; color: white; border-color:#111827; }
+    .device-wrap {
+      width: 100%;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.64);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.24)),
+        radial-gradient(circle at top left, rgba(109,93,252,.12), transparent 26%);
+      border-radius:32px;
+      padding: 18px;
+      box-shadow: var(--shadow-xl);
+    }
+    .preview-shell {
+      --bg: #ffffff; --surface: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --primary: #2563eb; --primary-hover: #1d4ed8; --accent:#38bdf8; --border:#e2e8f0;
+      --font-heading: Inter, system-ui, sans-serif; --font-body: Inter, system-ui, sans-serif;
+      --h1: 64px; --h2: 44px; --h3: 30px; --h4: 22px; --body-size:18px; --small-size:14px;
+      --heading-lh: 1.08; --body-lh: 1.62; --letter: -.035em;
+      --section: 84px; --container:1180px; --gap:24px; --card-padding:28px;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:22px; --radius-pill:999px;
+      --button-radius: var(--radius-md); --button-shadow: 0 12px 30px rgba(15,23,42,.14); --button-border:1px solid transparent; --button-case:none;
+      --card-shadow:none; --card-border:1px solid var(--border); --card-bg: var(--card); --card-blur:0px;
+      position: relative;
+      overflow: hidden;
+      isolation:isolate;
+      width: min(100%, 1180px);
+      min-height: 760px;
+      color: var(--text);
+      background: var(--bg);
+      border-radius: 26px;
+      box-shadow: 0 30px 80px rgba(15,23,42,.24);
+      font-family: var(--font-body);
+      line-height: var(--body-lh);
+    }
+    .preview-shell.mobile { width: 390px; min-height: 760px; border-radius: 36px; }
+    .preview-shell::before {
+      content: "";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      background-image: var(--texture-bg, none);
+      background-size: var(--texture-size, auto);
+      opacity: .62;
+    }
+    .site-nav {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 18px;
+      width:min(var(--container), calc(100% - 56px));
+      margin:0 auto;
+      padding: 24px 0;
+    }
+    .logo { display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:-.04em; font-size: 17px; font-family: var(--font-heading); }
+    .logo-mark { width:34px; height:34px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 12px 28px color-mix(in srgb, var(--primary) 28%, transparent); }
+    .nav-links { display:flex; gap: 20px; color:var(--muted); font-size: 14px; }
+    .preview-shell.mobile .nav-links { display:none; }
+    .preview-shell.mobile .site-nav { width: calc(100% - 32px); padding:18px 0; }
+    .hero { width:min(var(--container), calc(100% - 56px)); margin: 0 auto; padding: calc(var(--section) * .78) 0 var(--section); display:grid; gap: var(--gap); align-items:center; }
+    .hero.split { grid-template-columns: 1.05fr .95fr; }
+    .hero.centered, .hero.minimal { text-align:center; max-width: 920px; }
+    .hero.editorial { grid-template-columns: 1.2fr .8fr; align-items:end; }
+    .hero.app { grid-template-columns: .92fr 1.08fr; }
+    .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; margin-bottom: 18px; color:var(--primary); font-weight:800; font-size: var(--small-size); letter-spacing:.08em; text-transform:uppercase; }
+    .hero h1 { margin:0; font-family:var(--font-heading); font-size:var(--h1); line-height:var(--heading-lh); letter-spacing:var(--letter); max-width: 920px; }
+    .hero p { margin: 20px 0 0; color:var(--muted); font-size: var(--body-size); max-width: 660px; }
+    .hero.centered p, .hero.minimal p { margin-left:auto; margin-right:auto; }
+    .hero-actions { display:flex; align-items:center; gap: 12px; flex-wrap:wrap; margin-top: 28px; }
+    .hero.centered .hero-actions, .hero.minimal .hero-actions { justify-content:center; }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height: 46px;
+      padding: 13px 18px;
+      border-radius: var(--button-radius);
+      border: var(--button-border);
+      cursor: pointer;
+      text-decoration:none;
+      font-weight:850;
+      letter-spacing: .01em;
+      text-transform: var(--button-case);
+      box-shadow: var(--button-shadow);
+      transition: .18s ease;
+    }
+    .btn:hover { transform: var(--button-hover, translateY(-1px)); }
+    .btn.primary { background: var(--button-bg, var(--primary)); color: var(--button-text, white); }
+    .btn.secondary { background: color-mix(in srgb, var(--card) 76%, transparent); color: var(--text); border: 1px solid var(--border); box-shadow:none; }
+    .mockup { position:relative; min-height: 430px; border-radius: var(--radius-lg); border: var(--card-border); background: var(--card-bg); box-shadow: var(--card-shadow); backdrop-filter: blur(var(--card-blur)); overflow:hidden; padding: var(--card-padding); }
+    .mockup::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 28%, transparent), transparent 35%); pointer-events:none; }
+    .mock-top { display:flex; gap:8px; margin-bottom: 18px; position:relative; }
+    .dot { width:10px; height:10px; border-radius:50%; background:var(--border); }
+    .stats-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; position:relative; }
+    .stat-card { border:1px solid var(--border); background:color-mix(in srgb, var(--surface) 80%, transparent); border-radius: var(--radius-md); padding:18px; }
+    .stat-card strong { display:block; font-family:var(--font-heading); font-size: var(--h3); line-height:1; letter-spacing:var(--letter); }
+    .stat-card span { color:var(--muted); font-size:var(--small-size); }
+    .chart { position:relative; margin-top: 14px; height:160px; border-radius:var(--radius-md); background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 20%, transparent), transparent), color-mix(in srgb, var(--surface) 82%, transparent); border:1px solid var(--border); overflow:hidden; }
+    .chart svg { width:100%; height:100%; position:absolute; inset:0; }
+    .section-preview { width:min(var(--container), calc(100% - 56px)); margin:0 auto; padding: 0 0 var(--section); }
+    .section-preview h2 { margin:0 0 12px; font-family:var(--font-heading); font-size:var(--h2); line-height:var(--heading-lh); letter-spacing:var(--letter); }
+    .section-preview > p { margin:0 0 26px; color:var(--muted); font-size:var(--body-size); max-width: 760px; }
+    .feature-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+    .feature-card { border-radius:var(--radius-lg); border:var(--card-border); background:var(--card-bg); box-shadow:var(--card-shadow); backdrop-filter:blur(var(--card-blur)); padding:var(--card-padding); }
+    .feature-icon { width:42px; height:42px; border-radius:var(--radius-md); background:linear-gradient(135deg,var(--primary),var(--accent)); margin-bottom:20px; }
+    .feature-card h3 { margin:0 0 8px; font-family:var(--font-heading); font-size:var(--h4); letter-spacing:var(--letter); line-height:var(--heading-lh); }
+    .feature-card p { margin:0; color:var(--muted); font-size: var(--small-size); }
+    .token-panel {
+      border:1px solid rgba(255,255,255,.64);
+      background: rgba(255,255,255,.72);
+      border-radius:28px;
+      padding:14px;
+      backdrop-filter:blur(26px);
+      box-shadow: var(--shadow-sm);
+    }
+    .token-panel-header { display:flex; align-items:center; justify-content:space-between; gap: 10px; margin-bottom: 10px; }
+    .token-panel h2 { margin:0; font-size:14px; letter-spacing: -.02em; }
+    .token-panel p { margin:0; color:var(--app-muted); font-size:11px; }
+    .codebox {
+      width:100%;
+      min-height:210px;
+      resize:vertical;
+      border:1px solid rgba(15,23,42,.10);
+      border-radius:20px;
+      padding:14px;
+      background:#090d18;
+      color:#dbeafe;
+      font: 12px/1.6 JetBrains Mono, ui-monospace, monospace;
+      white-space:pre;
+      overflow:auto;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .toast {
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%) translateY(20px);
+      opacity:0;
+      pointer-events:none;
+      background:#111827;
+      color:#ffffff;
+      border-radius:999px;
+      padding:11px 16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
+      z-index:40;
+      transition:.22s ease;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .preview-shell.mobile {
+      --h1: var(--h1-mobile); --h2: var(--h2-mobile); --h3: var(--h3-mobile); --h4: var(--h4-mobile); --body-size: var(--body-mobile); --small-size: var(--small-mobile);
+      --heading-lh: var(--heading-lh-mobile); --body-lh: var(--body-lh-mobile); --section: var(--section-mobile); --gap: var(--gap-mobile); --card-padding: var(--card-padding-mobile);
+    }
+    .preview-shell.mobile .hero, .preview-shell.mobile .hero.split, .preview-shell.mobile .hero.editorial, .preview-shell.mobile .hero.app { grid-template-columns:1fr; width:calc(100% - 32px); text-align:left; }
+    .preview-shell.mobile .hero.centered, .preview-shell.mobile .hero.minimal { text-align:center; }
+    .preview-shell.mobile .hero.centered .hero-actions, .preview-shell.mobile .hero.minimal .hero-actions { justify-content:center; }
+    .preview-shell.mobile .mockup { min-height: 320px; }
+    .preview-shell.mobile .stats-grid, .preview-shell.mobile .feature-grid { grid-template-columns:1fr; }
+    .preview-shell.mobile .section-preview { width:calc(100% - 32px); }
+    .preview-shell.mobile .feature-grid .feature-card:nth-child(n+3) { display:none; }
+    @media (max-width: 1100px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .sidebar { position:relative; top:0; max-height:none; }
+      .top-center { order: 3; width: 100%; }
+      .topbar { flex-wrap: wrap; }
+    }
+    @media (max-width: 720px) {
+      .topbar { align-items:flex-start; }
+      .main-grid { padding:12px; }
+      .device-wrap { padding:10px; }
+      .hero, .hero.split, .hero.editorial, .hero.app { grid-template-columns: 1fr; width:calc(100% - 32px); padding: var(--section) 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .top-actions { width: 100%; }
+      .utility-btn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>Design System Playground</h1>
+          <p>Reusable starter systems</p>
+        </div>
+      </div>
+      <div class="top-center">
+        <label class="top-search" for="siteFilter"><span>Search</span><input id="siteFilter" placeholder="SaaS, luxury, AI, wellness, ecommerce" /></label>
+      </div>
+      <div class="top-actions">
+        <button class="utility-btn" id="copyJson">JSON</button>
+        <button class="utility-btn" id="copyHero">Hero HTML</button>
+        <button class="utility-btn primary" id="copyCssTop">Copy CSS</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="sidebar">
+        <div class="panel-title"><h2>Start here</h2><span class="badge" id="countsBadge"></span></div>
+        <div class="control primary-select">
+          <label for="presetSelect">Complete preset</label>
+          <select id="presetSelect"></select>
+        </div>
+
+        <div class="info-card" id="presetInfo"></div>
+
+        <details class="control-group">
+          <summary>Fine tune system</summary>
+          <div class="quick-stack">
+            <div class="control"><label for="typographySelect">Typography</label><select id="typographySelect"></select></div>
+            <div class="control"><label for="colorSelect">Color</label><select id="colorSelect"></select></div>
+            <div class="control"><label for="textureSelect">Background</label><select id="textureSelect"></select></div>
+            <div class="control"><label for="heroSelect">Hero</label><select id="heroSelect"></select></div>
+          </div>
+        </details>
+
+        <details class="control-group">
+          <summary>Components</summary>
+          <div class="quick-stack">
+            <div class="control"><label for="spacingSelect">Spacing</label><select id="spacingSelect"></select></div>
+            <div class="control"><label for="radiusSelect">Radius</label><select id="radiusSelect"></select></div>
+            <div class="control"><label for="buttonSelect">Button</label><select id="buttonSelect"></select></div>
+            <div class="control"><label for="cardSelect">Card</label><select id="cardSelect"></select></div>
+          </div>
+        </details>
+
+        <details class="control-group">
+          <summary>Fit notes</summary>
+          <div class="info-card" id="typeInfo"></div>
+          <div class="info-card" id="colorInfo"></div>
+        </details>
+        <p class="count-note">Pick a preset, preview it, then copy tokens.</p>
+      </aside>
+
+      <section class="preview-area">
+        <div class="preview-toolbar">
+          <div><h2 id="activeTitle">Preview</h2><p id="activeSubtitle"></p></div>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="desktopBtn">Desktop</button>
+            <button class="toggle-btn" id="mobileBtn">Mobile</button>
+          </div>
+        </div>
+
+        <div class="device-wrap">
+          <article class="preview-shell" id="previewShell">
+            <nav class="site-nav">
+              <div class="logo"><span class="logo-mark"></span><span>Northstar</span></div>
+              <div class="nav-links"><span>Product</span><span>Solutions</span><span>Pricing</span><span>Contact</span></div>
+              <a class="btn secondary" href="#">Book demo</a>
+            </nav>
+
+            <section class="hero split" id="heroBlock">
+              <div class="hero-copy">
+                <span class="hero-eyebrow" id="heroEyebrow">Design direction selected</span>
+                <h1 id="heroHeadline">Launch a sharper landing page without starting from a blank screen.</h1>
+                <p id="heroText">Choose a complete visual direction, preview it across desktop and mobile, then copy the system tokens.</p>
+                <div class="hero-actions"><a class="btn primary" href="#">Start with this system</a><a class="btn secondary" href="#">View components</a></div>
+              </div>
+              <div class="mockup" aria-label="Sample product card">
+                <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                <div class="stats-grid">
+                  <div class="stat-card"><strong>38%</strong><span>Faster direction</span></div>
+                  <div class="stat-card"><strong>12</strong><span>Token groups</span></div>
+                </div>
+                <div class="chart">
+                  <svg viewBox="0 0 400 160" preserveAspectRatio="none"><path d="M0,130 C55,100 84,115 130,76 C178,36 210,88 248,55 C295,15 330,28 400,10" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round"/><path d="M0,130 C55,100 84,115 130,76 C178,36 210,88 248,55 C295,15 330,28 400,10 L400,160 L0,160 Z" fill="color-mix(in srgb, var(--primary) 18%, transparent)"/></svg>
+                </div>
+              </div>
+            </section>
+
+            <section class="section-preview">
+              <h2>Reusable components that match the chosen direction.</h2>
+              <p>The same visual system updates the cards, buttons, spacing, color, radius, and type scale together.</p>
+              <div class="feature-grid">
+                <article class="feature-card"><div class="feature-icon"></div><h3>Type scale</h3><p>Desktop and mobile sizes with line height and letter spacing.</p></article>
+                <article class="feature-card"><div class="feature-icon"></div><h3>Color tokens</h3><p>Background, surface, card, text, muted, primary, accent, and border.</p></article>
+                <article class="feature-card"><div class="feature-icon"></div><h3>Component feel</h3><p>Radius, shadows, cards, buttons, and optional background texture.</p></article>
+              </div>
+            </section>
+          </article>
+        </div>
+
+        <div class="token-panel">
+          <div class="token-panel-header"><div><h2>Copyable CSS tokens</h2><p>Ready to paste into a starter project.</p></div></div>
+          <textarea class="codebox" id="codeOutput" spellcheck="false"></textarea>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    const typographySets = [
+      {
+            "id": "type-01",
+            "name": "SaaS Clean",
+            "headingFont": "Inter, system-ui, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "SaaS, B2B, dashboards",
+            "mood": "Clean, reliable, modern",
+            "avoidFor": "Luxury editorial, artistic portfolios",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "62px",
+                        "h2": "43px",
+                        "h3": "30px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-02",
+            "name": "Premium Editorial",
+            "headingFont": "Playfair Display, Georgia, serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Luxury, consultants, fashion",
+            "mood": "Elegant, spacious, premium",
+            "avoidFor": "Dense dashboards, developer tools",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "86px",
+                        "h2": "58px",
+                        "h3": "38px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-03",
+            "name": "Startup Bold",
+            "headingFont": "Sora, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Startup, launches, AI tools",
+            "mood": "Bold, confident, energetic",
+            "avoidFor": "Conservative legal or finance",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "84px",
+                        "h2": "57px",
+                        "h3": "37px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "47px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-04",
+            "name": "Friendly Product",
+            "headingFont": "Nunito, Inter, sans-serif",
+            "bodyFont": "Nunito, Inter, sans-serif",
+            "bestFor": "Apps, education, family brands",
+            "mood": "Warm, approachable, soft",
+            "avoidFor": "Luxury brands, serious finance",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "70px",
+                        "h2": "48px",
+                        "h3": "33px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-05",
+            "name": "Tech Sharp",
+            "headingFont": "Space Grotesk, Inter, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "AI, developer tools, automation",
+            "mood": "Futuristic, crisp, technical",
+            "avoidFor": "Wellness, kids, handmade brands",
+            "scaleType": "Tech",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "68px",
+                        "h2": "48px",
+                        "h3": "33px",
+                        "h4": "23px",
+                        "body": "17px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "40px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.05em"
+      },
+      {
+            "id": "type-06",
+            "name": "Corporate Trust",
+            "headingFont": "Manrope, Arial, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Corporate, legal, healthcare",
+            "mood": "Structured, dependable, calm",
+            "avoidFor": "Experimental agency sites",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "56px",
+                        "h2": "41px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "35px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-07",
+            "name": "Luxury Serif",
+            "headingFont": "Prata, Georgia, serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Beauty, interiors, luxury services",
+            "mood": "Refined, calm, expensive",
+            "avoidFor": "SaaS dashboards, data tools",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "76px",
+                        "h2": "52px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "42px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-08",
+            "name": "Modern Marketplace",
+            "headingFont": "Poppins, Inter, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Ecommerce, marketplaces",
+            "mood": "Commercial, clear, friendly",
+            "avoidFor": "Editorial essays, legal pages",
+            "scaleType": "Ecommerce",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "31px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.032em"
+      },
+      {
+            "id": "type-09",
+            "name": "Editorial Scholar",
+            "headingFont": "Merriweather, Georgia, serif",
+            "bodyFont": "Lora, Georgia, serif",
+            "bestFor": "Blogs, journals, education",
+            "mood": "Thoughtful, literary, mature",
+            "avoidFor": "Conversion-heavy app landing",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "90px",
+                        "h2": "60px",
+                        "h3": "40px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "47px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-10",
+            "name": "App Landing",
+            "headingFont": "Outfit, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Mobile apps, productivity",
+            "mood": "Smooth, modern, balanced",
+            "avoidFor": "Luxury editorial",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "60px",
+                        "h2": "42px",
+                        "h3": "30px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "38px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-11",
+            "name": "Agency Display",
+            "headingFont": "Montserrat, Inter, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Agencies, portfolios, studios",
+            "mood": "Bold, polished, expressive",
+            "avoidFor": "Healthcare, legal compliance",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "80px",
+                        "h2": "55px",
+                        "h3": "36px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-12",
+            "name": "Creator Friendly",
+            "headingFont": "Urbanist, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Creators, courses, newsletters",
+            "mood": "Personal, bright, flexible",
+            "avoidFor": "Formal investor reports",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "66px",
+                        "h2": "46px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-13",
+            "name": "Finance Precise",
+            "headingFont": "IBM Plex Sans, Arial, sans-serif",
+            "bodyFont": "IBM Plex Sans, Arial, sans-serif",
+            "bestFor": "Fintech, banking, insurance",
+            "mood": "Precise, secure, professional",
+            "avoidFor": "Kids brands, playful campaigns",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "60px",
+                        "h2": "43px",
+                        "h3": "29px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-14",
+            "name": "Developer Mono Accent",
+            "headingFont": "JetBrains Mono, monospace",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Dev tools, APIs, cybersecurity",
+            "mood": "Technical, focused, distinctive",
+            "avoidFor": "Wellness, weddings, fashion",
+            "scaleType": "Tech",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "76px",
+                        "h2": "52px",
+                        "h3": "35px",
+                        "h4": "23px",
+                        "body": "17px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "44px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.05em"
+      },
+      {
+            "id": "type-15",
+            "name": "Classic Professional",
+            "headingFont": "Libre Baskerville, Georgia, serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Law firms, advisors, institutions",
+            "mood": "Traditional, trusted, serious",
+            "avoidFor": "Youthful app launches",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "54px",
+                        "h2": "40px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "34px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-16",
+            "name": "Soft Wellness",
+            "headingFont": "Lora, Georgia, serif",
+            "bodyFont": "Nunito, Inter, sans-serif",
+            "bestFor": "Wellness, therapy, coaching",
+            "mood": "Calm, human, gentle",
+            "avoidFor": "Cybersecurity, gaming",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "38px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-17",
+            "name": "Editorial Modern",
+            "headingFont": "Source Serif 4, Georgia, serif",
+            "bodyFont": "Manrope, Arial, sans-serif",
+            "bestFor": "Magazines, essays, personal brand",
+            "mood": "Smart, calm, contemporary",
+            "avoidFor": "Price-led ecommerce",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "86px",
+                        "h2": "58px",
+                        "h3": "38px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-18",
+            "name": "Product Minimal",
+            "headingFont": "DM Sans, Inter, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "SaaS, productized services",
+            "mood": "Minimal, clear, neutral",
+            "avoidFor": "Artistic luxury concepts",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "66px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-19",
+            "name": "Neo Brutal",
+            "headingFont": "Archivo, Arial Black, sans-serif",
+            "bodyFont": "IBM Plex Sans, Arial, sans-serif",
+            "bestFor": "Creative campaigns, bold agencies",
+            "mood": "Direct, loud, confident",
+            "avoidFor": "Healthcare, wealth management",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "86px",
+                        "h2": "58px",
+                        "h3": "38px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "48px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-20",
+            "name": "Learning Platform",
+            "headingFont": "Rubik, Inter, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Education, courses, LMS",
+            "mood": "Clear, friendly, readable",
+            "avoidFor": "Luxury brands, dark tech",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "62px",
+                        "h2": "44px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-21",
+            "name": "Boutique Fashion",
+            "headingFont": "Fraunces, Georgia, serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Fashion, beauty, boutique ecommerce",
+            "mood": "Stylish, editorial, expressive",
+            "avoidFor": "B2B software dashboards",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "74px",
+                        "h2": "51px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-22",
+            "name": "Minimal Portfolio",
+            "headingFont": "Raleway, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Designers, freelancers, portfolios",
+            "mood": "Light, elegant, minimal",
+            "avoidFor": "Heavy enterprise SaaS",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "44px",
+                        "h3": "30px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "40px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-23",
+            "name": "Healthcare Calm",
+            "headingFont": "Cabin, Inter, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Clinics, healthcare, therapy",
+            "mood": "Soft, accessible, trustworthy",
+            "avoidFor": "Neon launch pages",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "60px",
+                        "h2": "43px",
+                        "h3": "29px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-24",
+            "name": "Data Product",
+            "headingFont": "IBM Plex Sans, Arial, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Analytics, dashboards, BI tools",
+            "mood": "Systematic, precise, clean",
+            "avoidFor": "Luxury wedding sites",
+            "scaleType": "Compact",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "56px",
+                        "h2": "38px",
+                        "h3": "28px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "36px",
+                        "h2": "28px",
+                        "h3": "22px",
+                        "h4": "18px",
+                        "body": "15px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.52,
+                  "bodyMobile": 1.47
+            },
+            "letterSpacing": "-0.025em"
+      },
+      {
+            "id": "type-25",
+            "name": "AI Command",
+            "headingFont": "Space Grotesk, Inter, sans-serif",
+            "bodyFont": "IBM Plex Mono, monospace",
+            "bestFor": "AI products, automation, dev tools",
+            "mood": "Advanced, technical, sharp",
+            "avoidFor": "Local service businesses",
+            "scaleType": "Tech",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "68px",
+                        "h2": "48px",
+                        "h3": "33px",
+                        "h4": "23px",
+                        "body": "17px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "40px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.05em"
+      },
+      {
+            "id": "type-26",
+            "name": "Warm Local Business",
+            "headingFont": "Poppins, Inter, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Local services, restaurants, clinics",
+            "mood": "Warm, clear, practical",
+            "avoidFor": "Luxury editorial sites",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "38px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-27",
+            "name": "Premium Coach",
+            "headingFont": "Playfair Display, Georgia, serif",
+            "bodyFont": "Manrope, Arial, sans-serif",
+            "bestFor": "Coaches, experts, personal brand",
+            "mood": "Aspirational, polished, calm",
+            "avoidFor": "Engineering docs",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "76px",
+                        "h2": "52px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "42px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-28",
+            "name": "Conversion SaaS",
+            "headingFont": "Plus Jakarta Sans, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "SaaS, lead generation, B2B",
+            "mood": "Sharp, trustworthy, scalable",
+            "avoidFor": "Editorial magazines",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "66px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-29",
+            "name": "Cyber Secure",
+            "headingFont": "Sora, Inter, sans-serif",
+            "bodyFont": "IBM Plex Sans, Arial, sans-serif",
+            "bestFor": "Security, infrastructure, cloud",
+            "mood": "Serious, technical, strong",
+            "avoidFor": "Wellness or wedding sites",
+            "scaleType": "Tech",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "76px",
+                        "h2": "52px",
+                        "h3": "35px",
+                        "h4": "23px",
+                        "body": "17px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "44px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.05em"
+      },
+      {
+            "id": "type-30",
+            "name": "Organic Brand",
+            "headingFont": "Crimson Text, Georgia, serif",
+            "bodyFont": "Nunito, Inter, sans-serif",
+            "bestFor": "Food, wellness, skincare, organic",
+            "mood": "Natural, soft, crafted",
+            "avoidFor": "Fintech, cybersecurity",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "62px",
+                        "h2": "44px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-31",
+            "name": "Luxury Architecture",
+            "headingFont": "Prata, Georgia, serif",
+            "bodyFont": "Manrope, Arial, sans-serif",
+            "bestFor": "Architecture, interiors, property",
+            "mood": "Minimal, premium, spatial",
+            "avoidFor": "Playful ecommerce",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "74px",
+                        "h2": "51px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-32",
+            "name": "Bold Event",
+            "headingFont": "Montserrat, Inter, sans-serif",
+            "bodyFont": "Poppins, Inter, sans-serif",
+            "bestFor": "Events, webinars, campaigns",
+            "mood": "High-energy, direct, loud",
+            "avoidFor": "Legal or medical sites",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "82px",
+                        "h2": "56px",
+                        "h3": "36px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "46px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-33",
+            "name": "Clean Ecommerce",
+            "headingFont": "Outfit, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "DTC, ecommerce, product pages",
+            "mood": "Clear, modern, persuasive",
+            "avoidFor": "Academic publications",
+            "scaleType": "Ecommerce",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "31px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.032em"
+      },
+      {
+            "id": "type-34",
+            "name": "Magazine Luxe",
+            "headingFont": "Fraunces, Georgia, serif",
+            "bodyFont": "Lora, Georgia, serif",
+            "bestFor": "Editorial, beauty, culture",
+            "mood": "Expressive, rich, layered",
+            "avoidFor": "Developer SaaS",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "90px",
+                        "h2": "60px",
+                        "h3": "40px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "47px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-35",
+            "name": "Enterprise UI",
+            "headingFont": "Inter, system-ui, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Enterprise SaaS, portals",
+            "mood": "Functional, stable, low-risk",
+            "avoidFor": "Fashion lookbooks",
+            "scaleType": "Compact",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "48px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "32px",
+                        "h2": "28px",
+                        "h3": "22px",
+                        "h4": "18px",
+                        "body": "15px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.52,
+                  "bodyMobile": 1.47
+            },
+            "letterSpacing": "-0.025em"
+      },
+      {
+            "id": "type-36",
+            "name": "Mobile Game Friendly",
+            "headingFont": "Rubik, Inter, sans-serif",
+            "bodyFont": "Nunito, Inter, sans-serif",
+            "bestFor": "Gaming, apps, communities",
+            "mood": "Playful, bold, youthful",
+            "avoidFor": "Finance, legal, medical",
+            "scaleType": "Playful",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "68px",
+                        "h2": "47px",
+                        "h3": "32px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.04,
+                  "headingMobile": 1.08,
+                  "bodyDesktop": 1.6,
+                  "bodyMobile": 1.55
+            },
+            "letterSpacing": "-0.04em"
+      },
+      {
+            "id": "type-37",
+            "name": "Newsletter Personal",
+            "headingFont": "Lora, Georgia, serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Newsletters, creators, authors",
+            "mood": "Personal, readable, thoughtful",
+            "avoidFor": "Enterprise dashboards",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "86px",
+                        "h2": "58px",
+                        "h3": "38px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-38",
+            "name": "Investor Deck Web",
+            "headingFont": "Manrope, Arial, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Fundraising, corporate launch",
+            "mood": "Polished, credible, concise",
+            "avoidFor": "Kids, craft, handmade",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "60px",
+                        "h2": "43px",
+                        "h3": "29px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-39",
+            "name": "Creator Course",
+            "headingFont": "Plus Jakarta Sans, Inter, sans-serif",
+            "bodyFont": "Nunito, Inter, sans-serif",
+            "bestFor": "Courses, memberships, info products",
+            "mood": "Clear, friendly, energetic",
+            "avoidFor": "Luxury interiors",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "70px",
+                        "h2": "48px",
+                        "h3": "33px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-40",
+            "name": "Experimental Studio",
+            "headingFont": "Epilogue, Inter, sans-serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Studios, agencies, campaigns",
+            "mood": "Modern, artsy, confident",
+            "avoidFor": "Healthcare and legal",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "78px",
+                        "h2": "54px",
+                        "h3": "36px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "44px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-41",
+            "name": "Soft SaaS",
+            "headingFont": "Cabin, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "SaaS, support tools, HR tech",
+            "mood": "Friendly, clean, accessible",
+            "avoidFor": "High-fashion editorial",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "38px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-42",
+            "name": "Academic Authority",
+            "headingFont": "Roboto Slab, Georgia, serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Research, education, policy",
+            "mood": "Serious, readable, authoritative",
+            "avoidFor": "Consumer app launches",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "58px",
+                        "h2": "42px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "36px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-43",
+            "name": "Luxury Mono Mix",
+            "headingFont": "IBM Plex Mono, monospace",
+            "bodyFont": "Source Serif 4, Georgia, serif",
+            "bestFor": "Galleries, studios, fashion campaigns",
+            "mood": "Minimal, curated, unusual",
+            "avoidFor": "High-volume ecommerce",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "78px",
+                        "h2": "53px",
+                        "h3": "35px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "43px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-44",
+            "name": "Product Hunt Energy",
+            "headingFont": "Poppins, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Launch pages, startup tools",
+            "mood": "Bright, energetic, familiar",
+            "avoidFor": "Traditional institutions",
+            "scaleType": "Playful",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "74px",
+                        "h2": "50px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "44px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.04,
+                  "headingMobile": 1.08,
+                  "bodyDesktop": 1.6,
+                  "bodyMobile": 1.55
+            },
+            "letterSpacing": "-0.04em"
+      },
+      {
+            "id": "type-45",
+            "name": "Calm Consultant",
+            "headingFont": "Source Serif 4, Georgia, serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Consultants, therapists, advisors",
+            "mood": "Grounded, gentle, expert",
+            "avoidFor": "Gaming and Web3",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "72px",
+                        "h2": "50px",
+                        "h3": "34px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "40px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-46",
+            "name": "Recruiting Platform",
+            "headingFont": "Urbanist, Inter, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "HR tech, recruiting, jobs",
+            "mood": "Human, clean, practical",
+            "avoidFor": "Luxury jewelry sites",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "62px",
+                        "h2": "43px",
+                        "h3": "30px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-47",
+            "name": "Travel Editorial",
+            "headingFont": "Playfair Display, Georgia, serif",
+            "bodyFont": "Lora, Georgia, serif",
+            "bestFor": "Travel, hospitality, lifestyle",
+            "mood": "Aspirational, scenic, warm",
+            "avoidFor": "Developer tools",
+            "scaleType": "Editorial",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "86px",
+                        "h2": "58px",
+                        "h3": "38px",
+                        "h4": "26px",
+                        "body": "19px",
+                        "small": "15px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.75,
+                  "bodyMobile": 1.7
+            },
+            "letterSpacing": "-0.045em"
+      },
+      {
+            "id": "type-48",
+            "name": "High Contrast Sales",
+            "headingFont": "Archivo, Arial, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Sales pages, offers, webinars",
+            "mood": "Punchy, direct, conversion-first",
+            "avoidFor": "Medical and legal sites",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "84px",
+                        "h2": "57px",
+                        "h3": "37px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "47px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      },
+      {
+            "id": "type-49",
+            "name": "Soft Luxury Beauty",
+            "headingFont": "Cormorant Garamond, Georgia, serif",
+            "bodyFont": "DM Sans, Inter, sans-serif",
+            "bestFor": "Beauty, skincare, salons",
+            "mood": "Soft, feminine, premium",
+            "avoidFor": "Tech and finance",
+            "scaleType": "Luxury",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "80px",
+                        "h2": "54px",
+                        "h3": "36px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "44px",
+                        "h2": "34px",
+                        "h3": "27px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.0,
+                  "headingMobile": 1.04,
+                  "bodyDesktop": 1.7,
+                  "bodyMobile": 1.65
+            },
+            "letterSpacing": "-0.03em"
+      },
+      {
+            "id": "type-50",
+            "name": "Clean Legal",
+            "headingFont": "Merriweather, Georgia, serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Law, advisory, government",
+            "mood": "Trustworthy, formal, readable",
+            "avoidFor": "Youth products",
+            "scaleType": "Corporate",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "54px",
+                        "h2": "40px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "34px",
+                        "h2": "30px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.66,
+                  "bodyMobile": 1.61
+            },
+            "letterSpacing": "-0.02em"
+      },
+      {
+            "id": "type-51",
+            "name": "Neon Tech",
+            "headingFont": "Outfit, Inter, sans-serif",
+            "bodyFont": "IBM Plex Mono, monospace",
+            "bestFor": "AI, crypto tools, gaming tech",
+            "mood": "Bright, digital, modern",
+            "avoidFor": "Wellness or law firms",
+            "scaleType": "Tech",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "70px",
+                        "h2": "49px",
+                        "h3": "33px",
+                        "h4": "23px",
+                        "body": "17px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "41px",
+                        "h2": "34px",
+                        "h3": "26px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.02,
+                  "headingMobile": 1.06,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.05em"
+      },
+      {
+            "id": "type-52",
+            "name": "Humanist Startup",
+            "headingFont": "Aptos, Inter, system-ui, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Startups, service SaaS, nonprofits",
+            "mood": "Warm, clear, trustworthy",
+            "avoidFor": "Luxury fashion",
+            "scaleType": "Balanced",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "44px",
+                        "h3": "30px",
+                        "h4": "22px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "40px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.62,
+                  "bodyMobile": 1.57
+            },
+            "letterSpacing": "-0.035em"
+      },
+      {
+            "id": "type-53",
+            "name": "DTC Premium",
+            "headingFont": "Canela, Fraunces, Georgia, serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Premium ecommerce, DTC brands",
+            "mood": "Polished, aspirational, clean",
+            "avoidFor": "Developer docs",
+            "scaleType": "Ecommerce",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "64px",
+                        "h2": "45px",
+                        "h3": "31px",
+                        "h4": "22px",
+                        "body": "17px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "39px",
+                        "h2": "31px",
+                        "h3": "24px",
+                        "h4": "19px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.58,
+                  "bodyMobile": 1.53
+            },
+            "letterSpacing": "-0.032em"
+      },
+      {
+            "id": "type-54",
+            "name": "Micro SaaS Compact",
+            "headingFont": "DM Sans, Inter, sans-serif",
+            "bodyFont": "Inter, system-ui, sans-serif",
+            "bestFor": "Micro SaaS, waitlists, tools",
+            "mood": "Fast, compact, clear",
+            "avoidFor": "Luxury campaigns",
+            "scaleType": "Compact",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "56px",
+                        "h2": "38px",
+                        "h3": "28px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  },
+                  "mobile": {
+                        "h1": "36px",
+                        "h2": "28px",
+                        "h3": "22px",
+                        "h4": "18px",
+                        "body": "15px",
+                        "small": "12px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.12,
+                  "headingMobile": 1.16,
+                  "bodyDesktop": 1.52,
+                  "bodyMobile": 1.47
+            },
+            "letterSpacing": "-0.025em"
+      },
+      {
+            "id": "type-55",
+            "name": "Restaurant Warmth",
+            "headingFont": "Fraunces, Georgia, serif",
+            "bodyFont": "Cabin, Inter, sans-serif",
+            "bestFor": "Restaurants, cafes, food brands",
+            "mood": "Warm, crafted, inviting",
+            "avoidFor": "Fintech and cybersecurity",
+            "scaleType": "Friendly",
+            "weights": "400, 500, 600, 700",
+            "sizes": {
+                  "desktop": {
+                        "h1": "62px",
+                        "h2": "44px",
+                        "h3": "31px",
+                        "h4": "23px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "37px",
+                        "h2": "32px",
+                        "h3": "25px",
+                        "h4": "20px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 1.08,
+                  "headingMobile": 1.12,
+                  "bodyDesktop": 1.64,
+                  "bodyMobile": 1.59
+            },
+            "letterSpacing": "-0.028em"
+      },
+      {
+            "id": "type-56",
+            "name": "Bold Nonprofit",
+            "headingFont": "Epilogue, Inter, sans-serif",
+            "bodyFont": "Open Sans, Arial, sans-serif",
+            "bestFor": "Nonprofits, campaigns, social causes",
+            "mood": "Human, urgent, optimistic",
+            "avoidFor": "Luxury property",
+            "scaleType": "Bold",
+            "weights": "400, 500, 700, 800",
+            "sizes": {
+                  "desktop": {
+                        "h1": "80px",
+                        "h2": "55px",
+                        "h3": "36px",
+                        "h4": "24px",
+                        "body": "18px",
+                        "small": "14px"
+                  },
+                  "mobile": {
+                        "h1": "45px",
+                        "h2": "36px",
+                        "h3": "28px",
+                        "h4": "21px",
+                        "body": "16px",
+                        "small": "13px"
+                  }
+            },
+            "lineHeights": {
+                  "headingDesktop": 0.98,
+                  "headingMobile": 1.02,
+                  "bodyDesktop": 1.55,
+                  "bodyMobile": 1.5
+            },
+            "letterSpacing": "-0.06em"
+      }
+];
+    const colorSchemes = [
+      {
+            "id": "color-01",
+            "name": "SaaS Blue Clean",
+            "bestFor": "SaaS, B2B, productivity",
+            "bgType": "Solid",
+            "mood": "Trustworthy, clear, modern",
+            "tokens": {
+                  "bg": "#ffffff",
+                  "surface": "#f8fafc",
+                  "card": "#ffffff",
+                  "text": "#0f172a",
+                  "muted": "#64748b",
+                  "primary": "#2563eb",
+                  "primaryHover": "#1d4ed8",
+                  "accent": "#38bdf8",
+                  "border": "#e2e8f0"
+            }
+      },
+      {
+            "id": "color-02",
+            "name": "Fintech Navy",
+            "bestFor": "Finance, insurance, B2B",
+            "bgType": "Solid",
+            "mood": "Secure, serious, premium",
+            "tokens": {
+                  "bg": "#f8fafc",
+                  "surface": "#eef2f7",
+                  "card": "#ffffff",
+                  "text": "#0b1220",
+                  "muted": "#526173",
+                  "primary": "#0f4c81",
+                  "primaryHover": "#0b3558",
+                  "accent": "#10b981",
+                  "border": "#d9e2ec"
+            }
+      },
+      {
+            "id": "color-03",
+            "name": "Luxury Ivory",
+            "bestFor": "Luxury, consultants, interiors",
+            "bgType": "Solid",
+            "mood": "Elegant, warm, premium",
+            "tokens": {
+                  "bg": "#fbf7ef",
+                  "surface": "#f3eadc",
+                  "card": "#fffaf2",
+                  "text": "#221a14",
+                  "muted": "#7a6b5b",
+                  "primary": "#9a6a2f",
+                  "primaryHover": "#67421d",
+                  "accent": "#d4a373",
+                  "border": "#e8dccb"
+            }
+      },
+      {
+            "id": "color-04",
+            "name": "Wellness Sage",
+            "bestFor": "Wellness, therapy, yoga",
+            "bgType": "Solid",
+            "mood": "Calm, organic, soft",
+            "tokens": {
+                  "bg": "#f6f7ef",
+                  "surface": "#e8edde",
+                  "card": "#ffffff",
+                  "text": "#1f2a22",
+                  "muted": "#667462",
+                  "primary": "#6b8f71",
+                  "primaryHover": "#49644e",
+                  "accent": "#d6a77a",
+                  "border": "#dbe3d0"
+            }
+      },
+      {
+            "id": "color-05",
+            "name": "Legal Slate",
+            "bestFor": "Law, advisory, institutions",
+            "bgType": "Solid",
+            "mood": "Formal, credible, steady",
+            "tokens": {
+                  "bg": "#f7f8fa",
+                  "surface": "#eceff3",
+                  "card": "#ffffff",
+                  "text": "#111827",
+                  "muted": "#5b6472",
+                  "primary": "#334155",
+                  "primaryHover": "#1f2937",
+                  "accent": "#b45309",
+                  "border": "#d8dee8"
+            }
+      },
+      {
+            "id": "color-06",
+            "name": "Ecommerce Rose",
+            "bestFor": "Beauty, fashion, DTC",
+            "bgType": "Solid",
+            "mood": "Soft, commercial, inviting",
+            "tokens": {
+                  "bg": "#fff7f8",
+                  "surface": "#ffe8ed",
+                  "card": "#ffffff",
+                  "text": "#251216",
+                  "muted": "#7a4f5a",
+                  "primary": "#e11d48",
+                  "primaryHover": "#be123c",
+                  "accent": "#fb7185",
+                  "border": "#ffd6de"
+            }
+      },
+      {
+            "id": "color-07",
+            "name": "AI Aurora Dark",
+            "bestFor": "AI, automation, dev tools",
+            "bgType": "Gradient",
+            "mood": "Futuristic, bold, electric",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #020617 0%, #1e1b4b 45%, #581c87 100%)",
+                  "surface": "rgba(255,255,255,.08)",
+                  "card": "rgba(255,255,255,.11)",
+                  "text": "#ffffff",
+                  "muted": "#cbd5e1",
+                  "primary": "#a78bfa",
+                  "primaryHover": "#7c3aed",
+                  "accent": "#22d3ee",
+                  "border": "rgba(255,255,255,.18)"
+            }
+      },
+      {
+            "id": "color-08",
+            "name": "Creator Pop",
+            "bestFor": "Creators, courses, newsletters",
+            "bgType": "Gradient",
+            "mood": "Bright, friendly, energetic",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #fff7ed 0%, #fdf2f8 45%, #eef2ff 100%)",
+                  "surface": "rgba(255,255,255,.75)",
+                  "card": "#ffffff",
+                  "text": "#211827",
+                  "muted": "#6b5b72",
+                  "primary": "#ec4899",
+                  "primaryHover": "#db2777",
+                  "accent": "#f97316",
+                  "border": "#f7c7d9"
+            }
+      },
+      {
+            "id": "color-09",
+            "name": "Cyber Black",
+            "bestFor": "Cybersecurity, dev tools",
+            "bgType": "Dark",
+            "mood": "Technical, sharp, secure",
+            "tokens": {
+                  "bg": "#050812",
+                  "surface": "#0b1220",
+                  "card": "#111827",
+                  "text": "#f8fafc",
+                  "muted": "#94a3b8",
+                  "primary": "#22c55e",
+                  "primaryHover": "#16a34a",
+                  "accent": "#38bdf8",
+                  "border": "#1f2937"
+            }
+      },
+      {
+            "id": "color-10",
+            "name": "Warm Clay",
+            "bestFor": "Coaches, food, local brands",
+            "bgType": "Solid",
+            "mood": "Earthy, human, grounded",
+            "tokens": {
+                  "bg": "#fff6ed",
+                  "surface": "#f4dfcf",
+                  "card": "#fffaf4",
+                  "text": "#2a1810",
+                  "muted": "#856755",
+                  "primary": "#c2410c",
+                  "primaryHover": "#9a3412",
+                  "accent": "#eab308",
+                  "border": "#efd3bd"
+            }
+      },
+      {
+            "id": "color-11",
+            "name": "Minimal Mono",
+            "bestFor": "Portfolios, studios, editorial",
+            "bgType": "Solid",
+            "mood": "Minimal, quiet, clean",
+            "tokens": {
+                  "bg": "#ffffff",
+                  "surface": "#f4f4f5",
+                  "card": "#ffffff",
+                  "text": "#09090b",
+                  "muted": "#71717a",
+                  "primary": "#18181b",
+                  "primaryHover": "#3f3f46",
+                  "accent": "#a1a1aa",
+                  "border": "#e4e4e7"
+            }
+      },
+      {
+            "id": "color-12",
+            "name": "Purple SaaS",
+            "bestFor": "SaaS, analytics, apps",
+            "bgType": "Gradient",
+            "mood": "Modern, smooth, confident",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #f5f3ff 0%, #eef2ff 50%, #ffffff 100%)",
+                  "surface": "#eef2ff",
+                  "card": "#ffffff",
+                  "text": "#17132f",
+                  "muted": "#625f75",
+                  "primary": "#7c3aed",
+                  "primaryHover": "#6d28d9",
+                  "accent": "#2563eb",
+                  "border": "#ddd6fe"
+            }
+      },
+      {
+            "id": "color-13",
+            "name": "Terminal Green",
+            "bestFor": "Dev tools, APIs, infra",
+            "bgType": "Dark",
+            "mood": "Code-like, technical, focused",
+            "tokens": {
+                  "bg": "#05140c",
+                  "surface": "#0a1f13",
+                  "card": "#0f2a1a",
+                  "text": "#ecfdf5",
+                  "muted": "#a7f3d0",
+                  "primary": "#34d399",
+                  "primaryHover": "#059669",
+                  "accent": "#facc15",
+                  "border": "#164e2f"
+            }
+      },
+      {
+            "id": "color-14",
+            "name": "Ocean Trust",
+            "bestFor": "Healthcare, SaaS, services",
+            "bgType": "Solid",
+            "mood": "Fresh, calm, trustworthy",
+            "tokens": {
+                  "bg": "#f2fbff",
+                  "surface": "#dff4fb",
+                  "card": "#ffffff",
+                  "text": "#0c2233",
+                  "muted": "#527386",
+                  "primary": "#0284c7",
+                  "primaryHover": "#0369a1",
+                  "accent": "#14b8a6",
+                  "border": "#cdeaf3"
+            }
+      },
+      {
+            "id": "color-15",
+            "name": "Sunset Launch",
+            "bestFor": "Campaigns, events, products",
+            "bgType": "Gradient",
+            "mood": "Energetic, bold, optimistic",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #fff7ed 0%, #fed7aa 45%, #fda4af 100%)",
+                  "surface": "rgba(255,255,255,.7)",
+                  "card": "#fffaf4",
+                  "text": "#2b170c",
+                  "muted": "#7c5040",
+                  "primary": "#f97316",
+                  "primaryHover": "#ea580c",
+                  "accent": "#e11d48",
+                  "border": "#fed7aa"
+            }
+      },
+      {
+            "id": "color-16",
+            "name": "Luxury Black Gold",
+            "bestFor": "Luxury, jewelry, fashion",
+            "bgType": "Dark",
+            "mood": "Premium, dramatic, refined",
+            "tokens": {
+                  "bg": "#090807",
+                  "surface": "#14110f",
+                  "card": "#1e1916",
+                  "text": "#fff8ee",
+                  "muted": "#c7b9a9",
+                  "primary": "#d4a373",
+                  "primaryHover": "#b8860b",
+                  "accent": "#f5d48c",
+                  "border": "#302923"
+            }
+      },
+      {
+            "id": "color-17",
+            "name": "Mint Cloud",
+            "bestFor": "Wellness, SaaS, apps",
+            "bgType": "Gradient",
+            "mood": "Light, fresh, optimistic",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #f0fdfa 0%, #ecfeff 50%, #f8fafc 100%)",
+                  "surface": "rgba(255,255,255,.75)",
+                  "card": "#ffffff",
+                  "text": "#10201e",
+                  "muted": "#5e7772",
+                  "primary": "#0f766e",
+                  "primaryHover": "#115e59",
+                  "accent": "#06b6d4",
+                  "border": "#ccfbf1"
+            }
+      },
+      {
+            "id": "color-18",
+            "name": "Charcoal Pro",
+            "bestFor": "Enterprise, B2B, finance",
+            "bgType": "Dark",
+            "mood": "Mature, clean, controlled",
+            "tokens": {
+                  "bg": "#111827",
+                  "surface": "#172033",
+                  "card": "#1f2937",
+                  "text": "#f9fafb",
+                  "muted": "#cbd5e1",
+                  "primary": "#60a5fa",
+                  "primaryHover": "#3b82f6",
+                  "accent": "#f59e0b",
+                  "border": "#334155"
+            }
+      },
+      {
+            "id": "color-19",
+            "name": "Peach Studio",
+            "bestFor": "Studios, creators, boutiques",
+            "bgType": "Solid",
+            "mood": "Friendly, warm, creative",
+            "tokens": {
+                  "bg": "#fff4ef",
+                  "surface": "#ffe5d9",
+                  "card": "#ffffff",
+                  "text": "#29130d",
+                  "muted": "#8a5f52",
+                  "primary": "#f97316",
+                  "primaryHover": "#ea580c",
+                  "accent": "#ec4899",
+                  "border": "#ffd5c4"
+            }
+      },
+      {
+            "id": "color-20",
+            "name": "Royal Indigo",
+            "bestFor": "SaaS, personal brand, events",
+            "bgType": "Gradient",
+            "mood": "Bold, modern, premium",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #eef2ff 0%, #e0e7ff 40%, #c7d2fe 100%)",
+                  "surface": "rgba(255,255,255,.72)",
+                  "card": "#ffffff",
+                  "text": "#18112f",
+                  "muted": "#625a7a",
+                  "primary": "#4f46e5",
+                  "primaryHover": "#4338ca",
+                  "accent": "#9333ea",
+                  "border": "#c7d2fe"
+            }
+      },
+      {
+            "id": "color-21",
+            "name": "Olive Editorial",
+            "bestFor": "Lifestyle, hospitality, organic",
+            "bgType": "Solid",
+            "mood": "Natural, mature, editorial",
+            "tokens": {
+                  "bg": "#faf9f2",
+                  "surface": "#ece8d4",
+                  "card": "#fffdf6",
+                  "text": "#242217",
+                  "muted": "#716d57",
+                  "primary": "#78716c",
+                  "primaryHover": "#57534e",
+                  "accent": "#a3a35f",
+                  "border": "#dfdcc7"
+            }
+      },
+      {
+            "id": "color-22",
+            "name": "Sky Startup",
+            "bestFor": "SaaS, agencies, startups",
+            "bgType": "Gradient",
+            "mood": "Clean, optimistic, light",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #ffffff 0%, #e0f2fe 55%, #dbeafe 100%)",
+                  "surface": "rgba(255,255,255,.78)",
+                  "card": "#ffffff",
+                  "text": "#0f172a",
+                  "muted": "#5b6b82",
+                  "primary": "#0284c7",
+                  "primaryHover": "#0369a1",
+                  "accent": "#6366f1",
+                  "border": "#bae6fd"
+            }
+      },
+      {
+            "id": "color-23",
+            "name": "Berry Premium",
+            "bestFor": "Beauty, ecommerce, creators",
+            "bgType": "Gradient",
+            "mood": "Rich, modern, expressive",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #fff1f2 0%, #fce7f3 55%, #ede9fe 100%)",
+                  "surface": "rgba(255,255,255,.75)",
+                  "card": "#ffffff",
+                  "text": "#2a1022",
+                  "muted": "#72506b",
+                  "primary": "#be185d",
+                  "primaryHover": "#9d174d",
+                  "accent": "#7c3aed",
+                  "border": "#fbcfe8"
+            }
+      },
+      {
+            "id": "color-24",
+            "name": "Graphite Agency",
+            "bestFor": "Agencies, studios, portfolios",
+            "bgType": "Dark",
+            "mood": "Cool, sharp, modern",
+            "tokens": {
+                  "bg": "#0c0c0f",
+                  "surface": "#15151a",
+                  "card": "#1d1d24",
+                  "text": "#fafafa",
+                  "muted": "#b9bac3",
+                  "primary": "#e5e7eb",
+                  "primaryHover": "#ffffff",
+                  "accent": "#a78bfa",
+                  "border": "#2a2a34"
+            }
+      },
+      {
+            "id": "color-25",
+            "name": "Education Blue",
+            "bestFor": "Schools, LMS, courses",
+            "bgType": "Solid",
+            "mood": "Clear, helpful, academic",
+            "tokens": {
+                  "bg": "#f8fbff",
+                  "surface": "#e7f0ff",
+                  "card": "#ffffff",
+                  "text": "#102033",
+                  "muted": "#5a6f89",
+                  "primary": "#2563eb",
+                  "primaryHover": "#1d4ed8",
+                  "accent": "#f59e0b",
+                  "border": "#dbeafe"
+            }
+      },
+      {
+            "id": "color-26",
+            "name": "Cafe Cream",
+            "bestFor": "Restaurants, cafes, food",
+            "bgType": "Solid",
+            "mood": "Warm, tasty, welcoming",
+            "tokens": {
+                  "bg": "#fff8ed",
+                  "surface": "#f4e2c9",
+                  "card": "#fffaf3",
+                  "text": "#2b190f",
+                  "muted": "#85634d",
+                  "primary": "#92400e",
+                  "primaryHover": "#78350f",
+                  "accent": "#dc2626",
+                  "border": "#ead4b8"
+            }
+      },
+      {
+            "id": "color-27",
+            "name": "Healthcare Soft",
+            "bestFor": "Clinics, medical, therapy",
+            "bgType": "Solid",
+            "mood": "Clean, safe, soft",
+            "tokens": {
+                  "bg": "#f6fbfb",
+                  "surface": "#e7f4f2",
+                  "card": "#ffffff",
+                  "text": "#102a2a",
+                  "muted": "#607878",
+                  "primary": "#0d9488",
+                  "primaryHover": "#0f766e",
+                  "accent": "#38bdf8",
+                  "border": "#d6eeee"
+            }
+      },
+      {
+            "id": "color-28",
+            "name": "Red Conversion",
+            "bestFor": "Sales pages, offers, events",
+            "bgType": "Solid",
+            "mood": "Urgent, punchy, confident",
+            "tokens": {
+                  "bg": "#fff7f7",
+                  "surface": "#ffe4e6",
+                  "card": "#ffffff",
+                  "text": "#250d0f",
+                  "muted": "#75484d",
+                  "primary": "#dc2626",
+                  "primaryHover": "#b91c1c",
+                  "accent": "#f97316",
+                  "border": "#fecdd3"
+            }
+      },
+      {
+            "id": "color-29",
+            "name": "Violet Night",
+            "bestFor": "AI, apps, gaming tech",
+            "bgType": "Dark",
+            "mood": "Digital, vibrant, immersive",
+            "tokens": {
+                  "bg": "#11071f",
+                  "surface": "#1b1030",
+                  "card": "#26143f",
+                  "text": "#faf5ff",
+                  "muted": "#c4b5fd",
+                  "primary": "#8b5cf6",
+                  "primaryHover": "#7c3aed",
+                  "accent": "#22d3ee",
+                  "border": "#3b2160"
+            }
+      },
+      {
+            "id": "color-30",
+            "name": "Sandstone Corporate",
+            "bestFor": "B2B services, advisors",
+            "bgType": "Solid",
+            "mood": "Neutral, stable, warm",
+            "tokens": {
+                  "bg": "#faf7f1",
+                  "surface": "#ebe4d8",
+                  "card": "#ffffff",
+                  "text": "#211f1b",
+                  "muted": "#6f695f",
+                  "primary": "#57534e",
+                  "primaryHover": "#44403c",
+                  "accent": "#b45309",
+                  "border": "#ded5c7"
+            }
+      },
+      {
+            "id": "color-31",
+            "name": "Lime Modern",
+            "bestFor": "Consumer apps, fitness, youth",
+            "bgType": "Gradient",
+            "mood": "Fresh, punchy, bright",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #f7fee7 0%, #ecfccb 45%, #dcfce7 100%)",
+                  "surface": "rgba(255,255,255,.75)",
+                  "card": "#ffffff",
+                  "text": "#14210c",
+                  "muted": "#667a4b",
+                  "primary": "#65a30d",
+                  "primaryHover": "#4d7c0f",
+                  "accent": "#16a34a",
+                  "border": "#d9f99d"
+            }
+      },
+      {
+            "id": "color-32",
+            "name": "Brick Editorial",
+            "bestFor": "Publishing, culture, restaurants",
+            "bgType": "Solid",
+            "mood": "Warm, mature, literary",
+            "tokens": {
+                  "bg": "#fff7ed",
+                  "surface": "#f2d6bf",
+                  "card": "#fffaf4",
+                  "text": "#28140d",
+                  "muted": "#7b5d4f",
+                  "primary": "#9a3412",
+                  "primaryHover": "#7c2d12",
+                  "accent": "#ca8a04",
+                  "border": "#efcfb6"
+            }
+      },
+      {
+            "id": "color-33",
+            "name": "Ice Blue Minimal",
+            "bestFor": "SaaS, docs, productivity",
+            "bgType": "Solid",
+            "mood": "Quiet, clean, spacious",
+            "tokens": {
+                  "bg": "#f8fbff",
+                  "surface": "#eef6ff",
+                  "card": "#ffffff",
+                  "text": "#0f1d2e",
+                  "muted": "#63768e",
+                  "primary": "#3b82f6",
+                  "primaryHover": "#2563eb",
+                  "accent": "#06b6d4",
+                  "border": "#d8eaff"
+            }
+      },
+      {
+            "id": "color-34",
+            "name": "Neon Grid",
+            "bestFor": "Gaming, AI, events",
+            "bgType": "Dark",
+            "mood": "Electric, loud, futuristic",
+            "tokens": {
+                  "bg": "#050019",
+                  "surface": "#0e0629",
+                  "card": "#160b3a",
+                  "text": "#ffffff",
+                  "muted": "#c4b5fd",
+                  "primary": "#00e5ff",
+                  "primaryHover": "#7c3aed",
+                  "accent": "#f0abfc",
+                  "border": "#2a165c"
+            }
+      },
+      {
+            "id": "color-35",
+            "name": "Powder Pink",
+            "bestFor": "Beauty, creators, wellness",
+            "bgType": "Solid",
+            "mood": "Soft, gentle, polished",
+            "tokens": {
+                  "bg": "#fff7fb",
+                  "surface": "#ffeaf4",
+                  "card": "#ffffff",
+                  "text": "#27131e",
+                  "muted": "#7f5b6e",
+                  "primary": "#db2777",
+                  "primaryHover": "#be185d",
+                  "accent": "#f9a8d4",
+                  "border": "#fbcfe8"
+            }
+      },
+      {
+            "id": "color-36",
+            "name": "Emerald Trust",
+            "bestFor": "Finance, ESG, health",
+            "bgType": "Solid",
+            "mood": "Stable, fresh, reliable",
+            "tokens": {
+                  "bg": "#f4fbf7",
+                  "surface": "#e1f2e8",
+                  "card": "#ffffff",
+                  "text": "#0f2418",
+                  "muted": "#5e7567",
+                  "primary": "#059669",
+                  "primaryHover": "#047857",
+                  "accent": "#0ea5e9",
+                  "border": "#cde8d7"
+            }
+      },
+      {
+            "id": "color-37",
+            "name": "Orange Creator",
+            "bestFor": "Courses, events, newsletters",
+            "bgType": "Gradient",
+            "mood": "Warm, active, friendly",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #fff7ed 0%, #ffedd5 45%, #fef3c7 100%)",
+                  "surface": "rgba(255,255,255,.75)",
+                  "card": "#ffffff",
+                  "text": "#24170d",
+                  "muted": "#7a5d47",
+                  "primary": "#ea580c",
+                  "primaryHover": "#c2410c",
+                  "accent": "#f59e0b",
+                  "border": "#fed7aa"
+            }
+      },
+      {
+            "id": "color-38",
+            "name": "Steel Enterprise",
+            "bestFor": "Enterprise, logistics, B2B",
+            "bgType": "Solid",
+            "mood": "Industrial, reliable, clear",
+            "tokens": {
+                  "bg": "#f7f9fb",
+                  "surface": "#e8edf3",
+                  "card": "#ffffff",
+                  "text": "#101820",
+                  "muted": "#647181",
+                  "primary": "#475569",
+                  "primaryHover": "#334155",
+                  "accent": "#0ea5e9",
+                  "border": "#d9e2ea"
+            }
+      },
+      {
+            "id": "color-39",
+            "name": "Lavender Calm",
+            "bestFor": "Wellness, beauty, coaching",
+            "bgType": "Solid",
+            "mood": "Soft, gentle, calm",
+            "tokens": {
+                  "bg": "#faf7ff",
+                  "surface": "#eee7fb",
+                  "card": "#ffffff",
+                  "text": "#21162d",
+                  "muted": "#766684",
+                  "primary": "#8b5cf6",
+                  "primaryHover": "#7c3aed",
+                  "accent": "#ec4899",
+                  "border": "#e9d5ff"
+            }
+      },
+      {
+            "id": "color-40",
+            "name": "High Contrast White",
+            "bestFor": "Agencies, startups, portfolios",
+            "bgType": "Solid",
+            "mood": "Crisp, bold, editorial",
+            "tokens": {
+                  "bg": "#ffffff",
+                  "surface": "#f4f4f5",
+                  "card": "#ffffff",
+                  "text": "#000000",
+                  "muted": "#52525b",
+                  "primary": "#000000",
+                  "primaryHover": "#27272a",
+                  "accent": "#2563eb",
+                  "border": "#d4d4d8"
+            }
+      },
+      {
+            "id": "color-41",
+            "name": "High Contrast Black",
+            "bestFor": "Studios, luxury, launches",
+            "bgType": "Dark",
+            "mood": "Dramatic, premium, direct",
+            "tokens": {
+                  "bg": "#000000",
+                  "surface": "#0a0a0a",
+                  "card": "#111111",
+                  "text": "#ffffff",
+                  "muted": "#a1a1aa",
+                  "primary": "#ffffff",
+                  "primaryHover": "#e4e4e7",
+                  "accent": "#f97316",
+                  "border": "#2a2a2a"
+            }
+      },
+      {
+            "id": "color-42",
+            "name": "Teal SaaS",
+            "bestFor": "SaaS, support, HR tech",
+            "bgType": "Gradient",
+            "mood": "Fresh, modern, approachable",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 42%, #f8fafc 100%)",
+                  "surface": "rgba(255,255,255,.74)",
+                  "card": "#ffffff",
+                  "text": "#10201d",
+                  "muted": "#617873",
+                  "primary": "#0f766e",
+                  "primaryHover": "#115e59",
+                  "accent": "#3b82f6",
+                  "border": "#99f6e4"
+            }
+      },
+      {
+            "id": "color-43",
+            "name": "Museum Neutral",
+            "bestFor": "Galleries, architecture, luxury",
+            "bgType": "Solid",
+            "mood": "Quiet, curated, spacious",
+            "tokens": {
+                  "bg": "#f7f4ee",
+                  "surface": "#e6ded1",
+                  "card": "#fffdf8",
+                  "text": "#1c1917",
+                  "muted": "#70675d",
+                  "primary": "#44403c",
+                  "primaryHover": "#292524",
+                  "accent": "#a16207",
+                  "border": "#ded6c8"
+            }
+      },
+      {
+            "id": "color-44",
+            "name": "Candy App",
+            "bestFor": "Mobile apps, youth brands",
+            "bgType": "Gradient",
+            "mood": "Playful, bright, upbeat",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #ecfeff 0%, #fdf2f8 45%, #fef9c3 100%)",
+                  "surface": "rgba(255,255,255,.76)",
+                  "card": "#ffffff",
+                  "text": "#1e1b2d",
+                  "muted": "#746b80",
+                  "primary": "#06b6d4",
+                  "primaryHover": "#0891b2",
+                  "accent": "#ec4899",
+                  "border": "#cffafe"
+            }
+      },
+      {
+            "id": "color-45",
+            "name": "Forest Premium",
+            "bestFor": "Outdoor, organic, hospitality",
+            "bgType": "Dark",
+            "mood": "Natural, rich, grounded",
+            "tokens": {
+                  "bg": "#07140d",
+                  "surface": "#0f2116",
+                  "card": "#17291d",
+                  "text": "#f5f7ed",
+                  "muted": "#c3d3bc",
+                  "primary": "#84cc16",
+                  "primaryHover": "#65a30d",
+                  "accent": "#d97706",
+                  "border": "#27452f"
+            }
+      },
+      {
+            "id": "color-46",
+            "name": "Solar Yellow",
+            "bestFor": "Campaigns, creators, product launches",
+            "bgType": "Solid",
+            "mood": "Optimistic, lively, attention-grabbing",
+            "tokens": {
+                  "bg": "#fffbea",
+                  "surface": "#fef3c7",
+                  "card": "#ffffff",
+                  "text": "#211a05",
+                  "muted": "#75662e",
+                  "primary": "#ca8a04",
+                  "primaryHover": "#a16207",
+                  "accent": "#ef4444",
+                  "border": "#fde68a"
+            }
+      },
+      {
+            "id": "color-47",
+            "name": "Rose Gold",
+            "bestFor": "Beauty, luxury, weddings",
+            "bgType": "Gradient",
+            "mood": "Soft, premium, romantic",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #fff7ed 0%, #ffe4e6 45%, #fae8ff 100%)",
+                  "surface": "rgba(255,255,255,.74)",
+                  "card": "#ffffff",
+                  "text": "#29131b",
+                  "muted": "#7a5961",
+                  "primary": "#be123c",
+                  "primaryHover": "#9f1239",
+                  "accent": "#c084fc",
+                  "border": "#fecdd3"
+            }
+      },
+      {
+            "id": "color-48",
+            "name": "Blue Steel Dark",
+            "bestFor": "Security, cloud, finance",
+            "bgType": "Dark",
+            "mood": "Serious, technical, reliable",
+            "tokens": {
+                  "bg": "#07111f",
+                  "surface": "#0d1b2e",
+                  "card": "#14243a",
+                  "text": "#f8fafc",
+                  "muted": "#b6c4d6",
+                  "primary": "#38bdf8",
+                  "primaryHover": "#0284c7",
+                  "accent": "#818cf8",
+                  "border": "#274158"
+            }
+      },
+      {
+            "id": "color-49",
+            "name": "Plum Editorial",
+            "bestFor": "Fashion, editorial, creators",
+            "bgType": "Solid",
+            "mood": "Rich, stylish, expressive",
+            "tokens": {
+                  "bg": "#fff7fb",
+                  "surface": "#f3e8ff",
+                  "card": "#ffffff",
+                  "text": "#24122b",
+                  "muted": "#725a7a",
+                  "primary": "#9333ea",
+                  "primaryHover": "#7e22ce",
+                  "accent": "#db2777",
+                  "border": "#e9d5ff"
+            }
+      },
+      {
+            "id": "color-50",
+            "name": "Clean Medical Blue",
+            "bestFor": "Medical, clinics, health SaaS",
+            "bgType": "Solid",
+            "mood": "Safe, open, trustworthy",
+            "tokens": {
+                  "bg": "#f6fbff",
+                  "surface": "#e7f2ff",
+                  "card": "#ffffff",
+                  "text": "#0f2437",
+                  "muted": "#61798f",
+                  "primary": "#0ea5e9",
+                  "primaryHover": "#0284c7",
+                  "accent": "#10b981",
+                  "border": "#cfe8f8"
+            }
+      },
+      {
+            "id": "color-51",
+            "name": "Event Neon Pink",
+            "bestFor": "Events, music, campaigns",
+            "bgType": "Dark",
+            "mood": "Loud, expressive, nightlife",
+            "tokens": {
+                  "bg": "#170013",
+                  "surface": "#260720",
+                  "card": "#35112e",
+                  "text": "#fff7fb",
+                  "muted": "#f9a8d4",
+                  "primary": "#ec4899",
+                  "primaryHover": "#db2777",
+                  "accent": "#facc15",
+                  "border": "#5b214e"
+            }
+      },
+      {
+            "id": "color-52",
+            "name": "Aqua Finance",
+            "bestFor": "Fintech, insurance, SaaS",
+            "bgType": "Gradient",
+            "mood": "Modern, clean, confident",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #f8fafc 0%, #dcfce7 45%, #cffafe 100%)",
+                  "surface": "rgba(255,255,255,.76)",
+                  "card": "#ffffff",
+                  "text": "#0b1f24",
+                  "muted": "#5d747a",
+                  "primary": "#0891b2",
+                  "primaryHover": "#0e7490",
+                  "accent": "#16a34a",
+                  "border": "#a5f3fc"
+            }
+      },
+      {
+            "id": "color-53",
+            "name": "Neutral SaaS Warm",
+            "bestFor": "SaaS, agencies, productized services",
+            "bgType": "Solid",
+            "mood": "Balanced, modern, soft",
+            "tokens": {
+                  "bg": "#fbfaf8",
+                  "surface": "#f0ebe4",
+                  "card": "#ffffff",
+                  "text": "#1c1917",
+                  "muted": "#71675f",
+                  "primary": "#4f46e5",
+                  "primaryHover": "#4338ca",
+                  "accent": "#f97316",
+                  "border": "#e7ded3"
+            }
+      },
+      {
+            "id": "color-54",
+            "name": "Dark Copper",
+            "bestFor": "Premium services, interiors, hospitality",
+            "bgType": "Dark",
+            "mood": "Warm, dramatic, refined",
+            "tokens": {
+                  "bg": "#120b07",
+                  "surface": "#1f130d",
+                  "card": "#2b1a12",
+                  "text": "#fff7ed",
+                  "muted": "#d6b8a0",
+                  "primary": "#d97706",
+                  "primaryHover": "#b45309",
+                  "accent": "#f59e0b",
+                  "border": "#4a2a1a"
+            }
+      },
+      {
+            "id": "color-55",
+            "name": "Pixel Blue",
+            "bestFor": "Gaming, dev communities, tools",
+            "bgType": "Dark",
+            "mood": "Playful, technical, digital",
+            "tokens": {
+                  "bg": "#030712",
+                  "surface": "#081326",
+                  "card": "#0f1f3d",
+                  "text": "#eff6ff",
+                  "muted": "#bfdbfe",
+                  "primary": "#3b82f6",
+                  "primaryHover": "#2563eb",
+                  "accent": "#22c55e",
+                  "border": "#1e3a5f"
+            }
+      },
+      {
+            "id": "color-56",
+            "name": "Soft Paper",
+            "bestFor": "Authors, coaches, journals",
+            "bgType": "Solid",
+            "mood": "Readable, gentle, human",
+            "tokens": {
+                  "bg": "#fffdf7",
+                  "surface": "#f4ead9",
+                  "card": "#ffffff",
+                  "text": "#241d16",
+                  "muted": "#756a5e",
+                  "primary": "#a16207",
+                  "primaryHover": "#854d0e",
+                  "accent": "#0f766e",
+                  "border": "#eadfcd"
+            }
+      },
+      {
+            "id": "color-57",
+            "name": "Ultra Violet Launch",
+            "bestFor": "AI, events, product launches",
+            "bgType": "Gradient",
+            "mood": "Intense, futuristic, memorable",
+            "tokens": {
+                  "bg": "linear-gradient(135deg, #0f0522 0%, #4c1d95 45%, #db2777 100%)",
+                  "surface": "rgba(255,255,255,.1)",
+                  "card": "rgba(255,255,255,.12)",
+                  "text": "#ffffff",
+                  "muted": "#e9d5ff",
+                  "primary": "#f0abfc",
+                  "primaryHover": "#d946ef",
+                  "accent": "#22d3ee",
+                  "border": "rgba(255,255,255,.2)"
+            }
+      },
+      {
+            "id": "color-58",
+            "name": "Clean Green Startup",
+            "bestFor": "Climate, ESG, wellness tech",
+            "bgType": "Solid",
+            "mood": "Fresh, optimistic, clear",
+            "tokens": {
+                  "bg": "#f7fff9",
+                  "surface": "#e9f8ee",
+                  "card": "#ffffff",
+                  "text": "#102116",
+                  "muted": "#617568",
+                  "primary": "#16a34a",
+                  "primaryHover": "#15803d",
+                  "accent": "#0ea5e9",
+                  "border": "#d5f0dd"
+            }
+      },
+      {
+            "id": "color-59",
+            "name": "Premium Navy Gold",
+            "bestFor": "Finance, luxury, advisors",
+            "bgType": "Dark",
+            "mood": "Authoritative, premium, calm",
+            "tokens": {
+                  "bg": "#08111f",
+                  "surface": "#111d30",
+                  "card": "#17243a",
+                  "text": "#f8fafc",
+                  "muted": "#cbd5e1",
+                  "primary": "#d4a373",
+                  "primaryHover": "#b8860b",
+                  "accent": "#60a5fa",
+                  "border": "#2d3d58"
+            }
+      }
+];
+    const spacingSystems = [
+      {
+            "id": "space-01",
+            "name": "Compact",
+            "bestFor": "Dashboards, micro SaaS, dense pages",
+            "mood": "Efficient, information-rich",
+            "tokens": {
+                  "section": "56px",
+                  "sectionMobile": "36px",
+                  "container": "1120px",
+                  "gap": "16px",
+                  "gapMobile": "12px",
+                  "cardPadding": "20px",
+                  "cardPaddingMobile": "16px"
+            }
+      },
+      {
+            "id": "space-02",
+            "name": "Balanced",
+            "bestFor": "Most landing pages and SaaS sites",
+            "mood": "Comfortable, universal",
+            "tokens": {
+                  "section": "84px",
+                  "sectionMobile": "52px",
+                  "container": "1180px",
+                  "gap": "24px",
+                  "gapMobile": "16px",
+                  "cardPadding": "28px",
+                  "cardPaddingMobile": "20px"
+            }
+      },
+      {
+            "id": "space-03",
+            "name": "Spacious",
+            "bestFor": "Premium services, modern SaaS, portfolios",
+            "mood": "Airy, calm, confident",
+            "tokens": {
+                  "section": "120px",
+                  "sectionMobile": "64px",
+                  "container": "1220px",
+                  "gap": "32px",
+                  "gapMobile": "20px",
+                  "cardPadding": "36px",
+                  "cardPaddingMobile": "24px"
+            }
+      },
+      {
+            "id": "space-04",
+            "name": "Editorial",
+            "bestFor": "Editorial, consultants, lifestyle brands",
+            "mood": "Measured, refined, readable",
+            "tokens": {
+                  "section": "108px",
+                  "sectionMobile": "60px",
+                  "container": "1040px",
+                  "gap": "28px",
+                  "gapMobile": "18px",
+                  "cardPadding": "32px",
+                  "cardPaddingMobile": "22px"
+            }
+      },
+      {
+            "id": "space-05",
+            "name": "Conversion Tight",
+            "bestFor": "Sales pages, ads, webinars",
+            "mood": "Focused, direct, fast",
+            "tokens": {
+                  "section": "72px",
+                  "sectionMobile": "42px",
+                  "container": "1140px",
+                  "gap": "18px",
+                  "gapMobile": "12px",
+                  "cardPadding": "24px",
+                  "cardPaddingMobile": "18px"
+            }
+      },
+      {
+            "id": "space-06",
+            "name": "Luxury Air",
+            "bestFor": "Luxury, architecture, fashion",
+            "mood": "Premium, slow, gallery-like",
+            "tokens": {
+                  "section": "148px",
+                  "sectionMobile": "72px",
+                  "container": "1280px",
+                  "gap": "40px",
+                  "gapMobile": "22px",
+                  "cardPadding": "44px",
+                  "cardPaddingMobile": "26px"
+            }
+      },
+      {
+            "id": "space-07",
+            "name": "Mobile First",
+            "bestFor": "App pages, local services, lead gen",
+            "mood": "Practical, responsive, simple",
+            "tokens": {
+                  "section": "76px",
+                  "sectionMobile": "38px",
+                  "container": "1080px",
+                  "gap": "22px",
+                  "gapMobile": "14px",
+                  "cardPadding": "24px",
+                  "cardPaddingMobile": "16px"
+            }
+      },
+      {
+            "id": "space-08",
+            "name": "Dashboard Dense",
+            "bestFor": "B2B products and data previews",
+            "mood": "Structured, compact, precise",
+            "tokens": {
+                  "section": "48px",
+                  "sectionMobile": "32px",
+                  "container": "1200px",
+                  "gap": "14px",
+                  "gapMobile": "10px",
+                  "cardPadding": "18px",
+                  "cardPaddingMobile": "14px"
+            }
+      },
+      {
+            "id": "space-09",
+            "name": "Campaign Large",
+            "bestFor": "Launches, events, product reveals",
+            "mood": "Bold, immersive, high-impact",
+            "tokens": {
+                  "section": "136px",
+                  "sectionMobile": "68px",
+                  "container": "1240px",
+                  "gap": "36px",
+                  "gapMobile": "20px",
+                  "cardPadding": "38px",
+                  "cardPaddingMobile": "24px"
+            }
+      }
+];
+    const radiusSystems = [
+      {
+            "id": "radius-01",
+            "name": "Sharp",
+            "bestFor": "Editorial, brutalist, enterprise",
+            "mood": "Direct, formal",
+            "tokens": {
+                  "sm": "0px",
+                  "md": "0px",
+                  "lg": "0px",
+                  "pill": "0px"
+            }
+      },
+      {
+            "id": "radius-02",
+            "name": "Subtle",
+            "bestFor": "Corporate, finance, legal",
+            "mood": "Professional, controlled",
+            "tokens": {
+                  "sm": "4px",
+                  "md": "8px",
+                  "lg": "12px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-03",
+            "name": "Balanced",
+            "bestFor": "SaaS, apps, general use",
+            "mood": "Modern, familiar",
+            "tokens": {
+                  "sm": "8px",
+                  "md": "14px",
+                  "lg": "22px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-04",
+            "name": "Soft",
+            "bestFor": "Wellness, education, creators",
+            "mood": "Friendly, calm",
+            "tokens": {
+                  "sm": "12px",
+                  "md": "20px",
+                  "lg": "32px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-05",
+            "name": "Bubble",
+            "bestFor": "Kids, apps, playful brands",
+            "mood": "Playful, soft",
+            "tokens": {
+                  "sm": "16px",
+                  "md": "28px",
+                  "lg": "44px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-06",
+            "name": "Premium Subtle",
+            "bestFor": "Luxury, architecture, advisors",
+            "mood": "Refined, minimal",
+            "tokens": {
+                  "sm": "2px",
+                  "md": "6px",
+                  "lg": "10px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-07",
+            "name": "App Rounded",
+            "bestFor": "Mobile apps, SaaS, marketplaces",
+            "mood": "Smooth, digital",
+            "tokens": {
+                  "sm": "10px",
+                  "md": "18px",
+                  "lg": "28px",
+                  "pill": "999px"
+            }
+      },
+      {
+            "id": "radius-08",
+            "name": "Card Heavy",
+            "bestFor": "Feature pages, pricing, ecommerce",
+            "mood": "Soft, modular",
+            "tokens": {
+                  "sm": "10px",
+                  "md": "22px",
+                  "lg": "36px",
+                  "pill": "999px"
+            }
+      }
+];
+    const buttonStyles = [
+      {
+            "id": "button-01",
+            "name": "Solid SaaS",
+            "bestFor": "SaaS, B2B, apps",
+            "mood": "Clear, reliable",
+            "tokens": {
+                  "radius": "var(--radius-md)",
+                  "shadow": "0 12px 30px rgba(15,23,42,.14)",
+                  "border": "1px solid transparent",
+                  "transform": "translateY(-1px)",
+                  "case": "none",
+                  "style": "solid"
+            }
+      },
+      {
+            "id": "button-02",
+            "name": "Pill CTA",
+            "bestFor": "Startups, creators, apps",
+            "mood": "Friendly, modern",
+            "tokens": {
+                  "radius": "var(--radius-pill)",
+                  "shadow": "0 16px 34px rgba(15,23,42,.16)",
+                  "border": "1px solid transparent",
+                  "transform": "translateY(-2px)",
+                  "case": "none",
+                  "style": "solid"
+            }
+      },
+      {
+            "id": "button-03",
+            "name": "Sharp Block",
+            "bestFor": "Brutalist, campaigns, agencies",
+            "mood": "Bold, direct",
+            "tokens": {
+                  "radius": "0px",
+                  "shadow": "6px 6px 0 rgba(0,0,0,.18)",
+                  "border": "2px solid var(--text)",
+                  "transform": "translate(-2px,-2px)",
+                  "case": "uppercase",
+                  "style": "solid"
+            }
+      },
+      {
+            "id": "button-04",
+            "name": "Premium Outline",
+            "bestFor": "Luxury, consultants, editorial",
+            "mood": "Elegant, quiet",
+            "tokens": {
+                  "radius": "var(--radius-sm)",
+                  "shadow": "none",
+                  "border": "1px solid var(--primary)",
+                  "transform": "none",
+                  "case": "uppercase",
+                  "style": "outline"
+            }
+      },
+      {
+            "id": "button-05",
+            "name": "Gradient CTA",
+            "bestFor": "AI, launches, events",
+            "mood": "Energetic, techy",
+            "tokens": {
+                  "radius": "var(--radius-pill)",
+                  "shadow": "0 18px 40px rgba(124,58,237,.24)",
+                  "border": "1px solid rgba(255,255,255,.25)",
+                  "transform": "translateY(-2px)",
+                  "case": "none",
+                  "style": "gradient"
+            }
+      },
+      {
+            "id": "button-06",
+            "name": "Soft Shadow",
+            "bestFor": "Wellness, education, local brands",
+            "mood": "Gentle, approachable",
+            "tokens": {
+                  "radius": "var(--radius-lg)",
+                  "shadow": "0 12px 24px rgba(15,23,42,.10)",
+                  "border": "1px solid transparent",
+                  "transform": "translateY(-1px)",
+                  "case": "none",
+                  "style": "solid"
+            }
+      },
+      {
+            "id": "button-07",
+            "name": "Glass Button",
+            "bestFor": "Dark tech, AI, premium apps",
+            "mood": "Futuristic, layered",
+            "tokens": {
+                  "radius": "var(--radius-pill)",
+                  "shadow": "0 18px 38px rgba(0,0,0,.22)",
+                  "border": "1px solid rgba(255,255,255,.28)",
+                  "transform": "translateY(-2px)",
+                  "case": "none",
+                  "style": "glass"
+            }
+      },
+      {
+            "id": "button-08",
+            "name": "Minimal Text",
+            "bestFor": "Editorial, portfolios, luxury",
+            "mood": "Quiet, refined",
+            "tokens": {
+                  "radius": "0px",
+                  "shadow": "none",
+                  "border": "0 solid transparent",
+                  "transform": "none",
+                  "case": "none",
+                  "style": "text"
+            }
+      },
+      {
+            "id": "button-09",
+            "name": "Ecommerce Buy",
+            "bestFor": "DTC, marketplaces, retail",
+            "mood": "Commercial, confident",
+            "tokens": {
+                  "radius": "var(--radius-sm)",
+                  "shadow": "0 10px 22px rgba(15,23,42,.12)",
+                  "border": "1px solid transparent",
+                  "transform": "translateY(-1px)",
+                  "case": "uppercase",
+                  "style": "solid"
+            }
+      },
+      {
+            "id": "button-10",
+            "name": "Luxury Filled",
+            "bestFor": "Luxury, property, fashion",
+            "mood": "Subtle, premium",
+            "tokens": {
+                  "radius": "var(--radius-sm)",
+                  "shadow": "none",
+                  "border": "1px solid var(--primary)",
+                  "transform": "none",
+                  "case": "uppercase",
+                  "style": "solid-dark"
+            }
+      },
+      {
+            "id": "button-11",
+            "name": "App Store Soft",
+            "bestFor": "Mobile apps, consumer products",
+            "mood": "Smooth, friendly",
+            "tokens": {
+                  "radius": "22px",
+                  "shadow": "0 14px 28px rgba(15,23,42,.12)",
+                  "border": "1px solid var(--border)",
+                  "transform": "translateY(-2px)",
+                  "case": "none",
+                  "style": "soft"
+            }
+      },
+      {
+            "id": "button-12",
+            "name": "Neon Edge",
+            "bestFor": "Gaming, AI, events",
+            "mood": "Electric, bold",
+            "tokens": {
+                  "radius": "var(--radius-md)",
+                  "shadow": "0 0 24px color-mix(in srgb, var(--accent) 35%, transparent)",
+                  "border": "1px solid var(--accent)",
+                  "transform": "translateY(-2px)",
+                  "case": "uppercase",
+                  "style": "neon"
+            }
+      }
+];
+    const cardStyles = [
+      {
+            "id": "card-01",
+            "name": "Flat Border",
+            "bestFor": "SaaS, legal, corporate",
+            "mood": "Clean, structured",
+            "tokens": {
+                  "shadow": "none",
+                  "border": "1px solid var(--border)",
+                  "background": "var(--card)",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-02",
+            "name": "Soft Shadow",
+            "bestFor": "Apps, ecommerce, wellness",
+            "mood": "Friendly, lifted",
+            "tokens": {
+                  "shadow": "0 18px 50px rgba(15,23,42,.12)",
+                  "border": "1px solid color-mix(in srgb, var(--border) 72%, transparent)",
+                  "background": "var(--card)",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-03",
+            "name": "Glass Surface",
+            "bestFor": "AI, gradients, dark tech",
+            "mood": "Layered, futuristic",
+            "tokens": {
+                  "shadow": "0 24px 70px rgba(0,0,0,.18)",
+                  "border": "1px solid rgba(255,255,255,.22)",
+                  "background": "color-mix(in srgb, var(--card) 75%, transparent)",
+                  "blur": "18px"
+            }
+      },
+      {
+            "id": "card-04",
+            "name": "Editorial Line",
+            "bestFor": "Editorial, luxury, portfolios",
+            "mood": "Quiet, refined",
+            "tokens": {
+                  "shadow": "none",
+                  "border": "1px solid var(--border)",
+                  "background": "transparent",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-05",
+            "name": "Heavy Premium",
+            "bestFor": "Pricing, enterprise, product pages",
+            "mood": "Solid, valuable",
+            "tokens": {
+                  "shadow": "0 30px 80px rgba(15,23,42,.18)",
+                  "border": "1px solid color-mix(in srgb, var(--border) 82%, transparent)",
+                  "background": "var(--card)",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-06",
+            "name": "Inset Soft",
+            "bestFor": "Wellness, education, local services",
+            "mood": "Gentle, tactile",
+            "tokens": {
+                  "shadow": "inset 0 1px 0 rgba(255,255,255,.45), 0 14px 36px rgba(15,23,42,.08)",
+                  "border": "1px solid var(--border)",
+                  "background": "var(--card)",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-07",
+            "name": "Brutalist Block",
+            "bestFor": "Campaigns, studios, bold brands",
+            "mood": "Loud, graphic",
+            "tokens": {
+                  "shadow": "8px 8px 0 rgba(0,0,0,.2)",
+                  "border": "2px solid var(--text)",
+                  "background": "var(--card)",
+                  "blur": "0px"
+            }
+      },
+      {
+            "id": "card-08",
+            "name": "No Card",
+            "bestFor": "Luxury, minimal, editorial",
+            "mood": "Open, quiet",
+            "tokens": {
+                  "shadow": "none",
+                  "border": "0 solid transparent",
+                  "background": "transparent",
+                  "blur": "0px"
+            }
+      }
+];
+    const textures = [
+      {
+            "id": "texture-none",
+            "name": "None",
+            "bestFor": "Any site",
+            "mood": "Clean",
+            "css": "none"
+      },
+      {
+            "id": "texture-grid",
+            "name": "Subtle Grid",
+            "bestFor": "SaaS, AI, dev tools",
+            "mood": "Structured",
+            "css": "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
+            "size": "36px 36px"
+      },
+      {
+            "id": "texture-dots",
+            "name": "Dot Pattern",
+            "bestFor": "Creator, startup, education",
+            "mood": "Playful",
+            "css": "radial-gradient(color-mix(in srgb, var(--muted) 28%, transparent) 1px, transparent 1.2px)",
+            "size": "22px 22px"
+      },
+      {
+            "id": "texture-glow",
+            "name": "Radial Glow",
+            "bestFor": "AI, apps, launches",
+            "mood": "Atmospheric",
+            "css": "radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 34%), radial-gradient(circle at 86% 8%, color-mix(in srgb, var(--primary) 24%, transparent), transparent 30%)",
+            "size": "auto"
+      },
+      {
+            "id": "texture-lines",
+            "name": "Diagonal Lines",
+            "bestFor": "Agencies, campaigns",
+            "mood": "Graphic",
+            "css": "repeating-linear-gradient(135deg, color-mix(in srgb, var(--border) 60%, transparent) 0 1px, transparent 1px 16px)",
+            "size": "auto"
+      },
+      {
+            "id": "texture-paper",
+            "name": "Paper Texture",
+            "bestFor": "Editorial, luxury, food",
+            "mood": "Crafted",
+            "css": "radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--muted) 9%, transparent) 0 1px, transparent 1.4px), radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--muted) 8%, transparent) 0 1px, transparent 1.6px)",
+            "size": "18px 18px, 23px 23px"
+      },
+      {
+            "id": "texture-spotlight",
+            "name": "Spotlight",
+            "bestFor": "Luxury, product launches",
+            "mood": "Focused",
+            "css": "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 38%)",
+            "size": "auto"
+      },
+      {
+            "id": "texture-noise",
+            "name": "Soft Noise",
+            "bestFor": "Premium, editorial, gradients",
+            "mood": "Tactile",
+            "css": "radial-gradient(circle at 25% 20%, rgba(255,255,255,.12) 0 1px, transparent 1.5px), radial-gradient(circle at 75% 70%, rgba(0,0,0,.08) 0 1px, transparent 1.5px)",
+            "size": "12px 12px, 14px 14px"
+      }
+];
+    const heroLayouts = [
+      {
+            "id": "hero-split",
+            "name": "Split Hero",
+            "bestFor": "SaaS, apps, services",
+            "mood": "Balanced, practical"
+      },
+      {
+            "id": "hero-centered",
+            "name": "Centered Hero",
+            "bestFor": "Launches, simple offers",
+            "mood": "Focused, direct"
+      },
+      {
+            "id": "hero-card",
+            "name": "Hero With Product Card",
+            "bestFor": "SaaS, AI, dashboards",
+            "mood": "Product-led"
+      },
+      {
+            "id": "hero-editorial",
+            "name": "Editorial Hero",
+            "bestFor": "Luxury, consultants, portfolios",
+            "mood": "Spacious, premium"
+      },
+      {
+            "id": "hero-app",
+            "name": "App Hero",
+            "bestFor": "Mobile apps, consumer products",
+            "mood": "Friendly, visual"
+      },
+      {
+            "id": "hero-minimal",
+            "name": "Minimal Hero",
+            "bestFor": "Studios, portfolios, personal brand",
+            "mood": "Quiet, refined"
+      }
+];
+    const completeSystems = [
+      {
+            "name": "SaaS Clean Starter",
+            "bestFor": "SaaS, B2B, productivity",
+            "typography": "type-01",
+            "color": "color-01",
+            "spacing": "space-02",
+            "radius": "radius-03",
+            "button": "button-01",
+            "card": "card-01",
+            "texture": "texture-none",
+            "hero": "hero-card"
+      },
+      {
+            "name": "AI Dark Gradient",
+            "bestFor": "AI, automation, developer tools",
+            "typography": "type-05",
+            "color": "color-07",
+            "spacing": "space-03",
+            "radius": "radius-07",
+            "button": "button-05",
+            "card": "card-03",
+            "texture": "texture-glow",
+            "hero": "hero-card"
+      },
+      {
+            "name": "Luxury Consultant",
+            "bestFor": "Consultants, luxury services, architecture",
+            "typography": "type-07",
+            "color": "color-03",
+            "spacing": "space-06",
+            "radius": "radius-06",
+            "button": "button-04",
+            "card": "card-04",
+            "texture": "texture-paper",
+            "hero": "hero-editorial"
+      },
+      {
+            "name": "Wellness Calm",
+            "bestFor": "Wellness, therapy, coaching",
+            "typography": "type-16",
+            "color": "color-04",
+            "spacing": "space-04",
+            "radius": "radius-04",
+            "button": "button-06",
+            "card": "card-06",
+            "texture": "texture-paper",
+            "hero": "hero-split"
+      },
+      {
+            "name": "Creator Course Pop",
+            "bestFor": "Courses, creators, newsletters",
+            "typography": "type-12",
+            "color": "color-08",
+            "spacing": "space-05",
+            "radius": "radius-05",
+            "button": "button-02",
+            "card": "card-02",
+            "texture": "texture-dots",
+            "hero": "hero-centered"
+      },
+      {
+            "name": "Fintech Authority",
+            "bestFor": "Finance, investment, insurance",
+            "typography": "type-13",
+            "color": "color-02",
+            "spacing": "space-02",
+            "radius": "radius-02",
+            "button": "button-01",
+            "card": "card-01",
+            "texture": "texture-none",
+            "hero": "hero-split"
+      },
+      {
+            "name": "Agency Bold",
+            "bestFor": "Agencies, campaigns, studios",
+            "typography": "type-19",
+            "color": "color-40",
+            "spacing": "space-09",
+            "radius": "radius-01",
+            "button": "button-03",
+            "card": "card-07",
+            "texture": "texture-lines",
+            "hero": "hero-centered"
+      },
+      {
+            "name": "Ecommerce Premium",
+            "bestFor": "DTC, fashion, beauty, retail",
+            "typography": "type-33",
+            "color": "color-06",
+            "spacing": "space-02",
+            "radius": "radius-03",
+            "button": "button-09",
+            "card": "card-02",
+            "texture": "texture-none",
+            "hero": "hero-split"
+      },
+      {
+            "name": "Healthcare Trust",
+            "bestFor": "Clinics, therapy, health SaaS",
+            "typography": "type-23",
+            "color": "color-27",
+            "spacing": "space-02",
+            "radius": "radius-04",
+            "button": "button-06",
+            "card": "card-01",
+            "texture": "texture-none",
+            "hero": "hero-split"
+      },
+      {
+            "name": "Developer Terminal",
+            "bestFor": "APIs, infra, cybersecurity",
+            "typography": "type-14",
+            "color": "color-13",
+            "spacing": "space-08",
+            "radius": "radius-02",
+            "button": "button-07",
+            "card": "card-03",
+            "texture": "texture-grid",
+            "hero": "hero-card"
+      },
+      {
+            "name": "Restaurant Warm",
+            "bestFor": "Restaurants, cafes, food brands",
+            "typography": "type-55",
+            "color": "color-26",
+            "spacing": "space-04",
+            "radius": "radius-04",
+            "button": "button-10",
+            "card": "card-06",
+            "texture": "texture-paper",
+            "hero": "hero-editorial"
+      },
+      {
+            "name": "Portfolio Minimal",
+            "bestFor": "Designers, studios, personal brand",
+            "typography": "type-22",
+            "color": "color-11",
+            "spacing": "space-03",
+            "radius": "radius-06",
+            "button": "button-08",
+            "card": "card-08",
+            "texture": "texture-none",
+            "hero": "hero-minimal"
+      },
+      {
+            "name": "Launch Neon",
+            "bestFor": "Events, AI, gaming, product reveal",
+            "typography": "type-51",
+            "color": "color-34",
+            "spacing": "space-09",
+            "radius": "radius-07",
+            "button": "button-12",
+            "card": "card-03",
+            "texture": "texture-grid",
+            "hero": "hero-centered"
+      },
+      {
+            "name": "Education Friendly",
+            "bestFor": "Courses, schools, LMS",
+            "typography": "type-20",
+            "color": "color-25",
+            "spacing": "space-02",
+            "radius": "radius-04",
+            "button": "button-02",
+            "card": "card-02",
+            "texture": "texture-dots",
+            "hero": "hero-split"
+      }
+];
+
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      typography: typographySets[0].id,
+      color: colorSchemes[0].id,
+      spacing: spacingSystems[1].id,
+      radius: radiusSystems[2].id,
+      button: buttonStyles[0].id,
+      card: cardStyles[0].id,
+      texture: textures[0].id,
+      hero: heroLayouts[2].id,
+      device: 'desktop'
+    };
+
+    const refs = {
+      presetSelect: $('presetSelect'), siteFilter: $('siteFilter'), typographySelect: $('typographySelect'), colorSelect: $('colorSelect'),
+      spacingSelect: $('spacingSelect'), radiusSelect: $('radiusSelect'), buttonSelect: $('buttonSelect'), cardSelect: $('cardSelect'), textureSelect: $('textureSelect'), heroSelect: $('heroSelect'),
+      previewShell: $('previewShell'), heroBlock: $('heroBlock'), codeOutput: $('codeOutput'), toast: $('toast')
+    };
+
+    function byId(list, id) { return list.find(item => item.id === id) || list[0]; }
+    function matchItem(item, query) {
+      if (!query) return true;
+      const blob = JSON.stringify(item).toLowerCase();
+      return blob.includes(query.toLowerCase());
+    }
+    function optionText(item) { return `${item.name}  ·  ${item.bestFor || item.bgType || ''}`; }
+    function fillSelect(select, list, selectedId, query = '') {
+      const filtered = list.filter(item => matchItem(item, query));
+      const source = filtered.length ? filtered : list;
+      select.innerHTML = source.map(item => `<option value="${item.id}">${optionText(item)}<\/option>`).join('');
+      if (source.some(item => item.id === selectedId)) select.value = selectedId;
+      else select.value = source[0].id;
+      return select.value;
+    }
+    function fillPlainSelect(select, list, selectedId) {
+      select.innerHTML = list.map((item, index) => `<option value="${item.id || index}">${item.name}  ·  ${item.bestFor || ''}<\/option>`).join('');
+      select.value = selectedId;
+    }
+
+    function initSelects() {
+      refs.presetSelect.innerHTML = `<option value="custom">Custom mix<\/option>` + completeSystems.map((item, index) => `<option value="${index}">${item.name}  ·  ${item.bestFor}<\/option>`).join('');
+      fillSelect(refs.typographySelect, typographySets, state.typography);
+      fillSelect(refs.colorSelect, colorSchemes, state.color);
+      fillPlainSelect(refs.spacingSelect, spacingSystems, state.spacing);
+      fillPlainSelect(refs.radiusSelect, radiusSystems, state.radius);
+      fillPlainSelect(refs.buttonSelect, buttonStyles, state.button);
+      fillPlainSelect(refs.cardSelect, cardStyles, state.card);
+      fillPlainSelect(refs.textureSelect, textures, state.texture);
+      fillPlainSelect(refs.heroSelect, heroLayouts, state.hero);
+      $('countsBadge').textContent = `${typographySets.length} type systems · ${colorSchemes.length} palettes`; 
+    }
+
+    function applyPreset(index) {
+      if (index === 'custom') return;
+      const preset = completeSystems[Number(index)];
+      if (!preset) return;
+      Object.assign(state, {
+        typography: preset.typography, color: preset.color, spacing: preset.spacing, radius: preset.radius, button: preset.button,
+        card: preset.card, texture: preset.texture, hero: preset.hero
+      });
+      syncControls();
+      updateAll();
+    }
+
+    function syncControls() {
+      refs.typographySelect.value = state.typography; refs.colorSelect.value = state.color; refs.spacingSelect.value = state.spacing;
+      refs.radiusSelect.value = state.radius; refs.buttonSelect.value = state.button; refs.cardSelect.value = state.card; refs.textureSelect.value = state.texture; refs.heroSelect.value = state.hero;
+    }
+
+    function setVar(name, value) { refs.previewShell.style.setProperty(name, value); }
+    function applyButtonTokens(button, color) {
+      const t = button.tokens;
+      setVar('--button-radius', t.radius); setVar('--button-shadow', t.shadow); setVar('--button-border', t.border); setVar('--button-case', t.case);
+      setVar('--button-hover', t.transform);
+      if (t.style === 'outline') { setVar('--button-bg', 'transparent'); setVar('--button-text', 'var(--primary)'); }
+      else if (t.style === 'gradient') { setVar('--button-bg', 'linear-gradient(135deg, var(--primary), var(--accent))'); setVar('--button-text', '#ffffff'); }
+      else if (t.style === 'glass') { setVar('--button-bg', 'rgba(255,255,255,.14)'); setVar('--button-text', 'var(--text)'); }
+      else if (t.style === 'text') { setVar('--button-bg', 'transparent'); setVar('--button-text', 'var(--primary)'); }
+      else if (t.style === 'solid-dark') { setVar('--button-bg', 'var(--text)'); setVar('--button-text', 'var(--bg)'); }
+      else if (t.style === 'soft') { setVar('--button-bg', 'color-mix(in srgb, var(--primary) 16%, var(--card))'); setVar('--button-text', 'var(--primary)'); }
+      else if (t.style === 'neon') { setVar('--button-bg', 'color-mix(in srgb, var(--primary) 18%, transparent)'); setVar('--button-text', 'var(--text)'); }
+      else { setVar('--button-bg', 'var(--primary)'); setVar('--button-text', '#ffffff'); }
+    }
+
+    function applyHeroCopy(typography, color, preset) {
+      const hero = byId(heroLayouts, state.hero);
+      const category = color.bestFor.split(',')[0];
+      $('heroEyebrow').textContent = `${color.bgType} background | ${typography.scaleType} type`;
+      $('heroHeadline').textContent = hero.id === 'hero-editorial'
+        ? 'A refined digital presence with space, rhythm, and restraint.'
+        : hero.id === 'hero-centered'
+          ? 'Choose a visual direction before the project gets complicated.'
+          : hero.id === 'hero-minimal'
+            ? 'A simple system for confident, consistent web design.'
+            : `Build a ${category.toLowerCase()} landing page with a complete visual system.`;
+      $('heroText').textContent = `A ready visual direction using ${typography.name} type, ${color.name} colors, ${byId(buttonStyles,state.button).name} buttons, and ${byId(cardStyles,state.card).name} cards.`;
+      refs.heroBlock.className = 'hero ' + state.hero.replace('hero-', '');
+      if (state.hero === 'hero-split' || state.hero === 'hero-card') refs.heroBlock.className = 'hero split';
+    }
+
+    function updateAll() {
+      const typography = byId(typographySets, state.typography);
+      const color = byId(colorSchemes, state.color);
+      const spacing = byId(spacingSystems, state.spacing);
+      const radius = byId(radiusSystems, state.radius);
+      const button = byId(buttonStyles, state.button);
+      const card = byId(cardStyles, state.card);
+      const texture = byId(textures, state.texture);
+      const hero = byId(heroLayouts, state.hero);
+
+      const ct = color.tokens, st = spacing.tokens, rt = radius.tokens, cdt = card.tokens;
+      Object.entries(ct).forEach(([key, val]) => setVar('--' + (key === 'primaryHover' ? 'primary-hover' : key), val));
+      setVar('--font-heading', typography.headingFont); setVar('--font-body', typography.bodyFont);
+      setVar('--h1', typography.sizes.desktop.h1); setVar('--h2', typography.sizes.desktop.h2); setVar('--h3', typography.sizes.desktop.h3); setVar('--h4', typography.sizes.desktop.h4); setVar('--body-size', typography.sizes.desktop.body); setVar('--small-size', typography.sizes.desktop.small);
+      setVar('--h1-mobile', typography.sizes.mobile.h1); setVar('--h2-mobile', typography.sizes.mobile.h2); setVar('--h3-mobile', typography.sizes.mobile.h3); setVar('--h4-mobile', typography.sizes.mobile.h4); setVar('--body-mobile', typography.sizes.mobile.body); setVar('--small-mobile', typography.sizes.mobile.small);
+      setVar('--heading-lh', typography.lineHeights.headingDesktop); setVar('--heading-lh-mobile', typography.lineHeights.headingMobile); setVar('--body-lh', typography.lineHeights.bodyDesktop); setVar('--body-lh-mobile', typography.lineHeights.bodyMobile); setVar('--letter', typography.letterSpacing);
+      setVar('--section', st.section); setVar('--section-mobile', st.sectionMobile); setVar('--container', st.container); setVar('--gap', st.gap); setVar('--gap-mobile', st.gapMobile); setVar('--card-padding', st.cardPadding); setVar('--card-padding-mobile', st.cardPaddingMobile);
+      setVar('--radius-sm', rt.sm); setVar('--radius-md', rt.md); setVar('--radius-lg', rt.lg); setVar('--radius-pill', rt.pill);
+      setVar('--card-shadow', cdt.shadow); setVar('--card-border', cdt.border); setVar('--card-bg', cdt.background); setVar('--card-blur', cdt.blur);
+      setVar('--texture-bg', texture.css); setVar('--texture-size', texture.size || 'auto');
+      applyButtonTokens(button, color);
+
+      refs.previewShell.classList.toggle('mobile', state.device === 'mobile');
+      $('desktopBtn').classList.toggle('active', state.device === 'desktop');
+      $('mobileBtn').classList.toggle('active', state.device === 'mobile');
+      applyHeroCopy(typography, color);
+      updateInfoCards(typography, color, spacing, radius, button, card, texture, hero);
+      refs.codeOutput.value = generateCss(typography, color, spacing, radius, button, card, texture);
+      $('activeTitle').textContent = `${typography.name} + ${color.name}`;
+      $('activeSubtitle').textContent = `${color.bestFor} | ${color.mood} | ${hero.name}`;
+    }
+
+    function updateInfoCards(typography, color, spacing, radius, button, card, texture, hero) {
+      const presetValue = refs.presetSelect.value;
+      const preset = presetValue !== 'custom' ? completeSystems[Number(presetValue)] : null;
+      $('presetInfo').innerHTML = `<div class="fit-card-main"><span class="mini-label">Selected system<\/span><h3>${preset ? preset.name : 'Custom Mix'}<\/h3><p>${preset ? preset.bestFor : color.bestFor}<\/p><\/div><div class="chip-line"><span>${hero.name}<\/span><span>${color.bgType}<\/span><span>${texture.name}<\/span><\/div>`;
+      $('typeInfo').innerHTML = `<div class="info-split"><div><span class="mini-label">Type<\/span><strong>${typography.name}<\/strong><small>${typography.mood}<\/small><\/div><div><span class="mini-label">Scale<\/span><strong>${typography.sizes.desktop.h1} / ${typography.sizes.mobile.h1}<\/strong><small>Desktop / mobile H1<\/small><\/div><\/div><div class="quiet-note">Best for ${typography.bestFor}. Avoid for ${typography.avoidFor}.<\/div>`;
+      $('colorInfo').innerHTML = `<div class="info-split"><div><span class="mini-label">Color<\/span><strong>${color.name}<\/strong><small>${color.mood}<\/small><\/div><div class="swatch-row">${Object.entries(color.tokens).slice(0,6).map(([k,v]) => `<span title="${k}: ${String(v)}" style="background:${String(v).startsWith('linear') ? 'var(--primary)' : v}"><\/span>`).join('')}<\/div><\/div><div class="quiet-note">${spacing.name}, ${radius.name}, ${button.name}, ${card.name}.<\/div>`;
+    }
+
+    function generateCss(typography, color, spacing, radius, button, card, texture) {
+      const ct = color.tokens, st = spacing.tokens, rt = radius.tokens, bt = button.tokens, cdt = card.tokens;
+      return `:root {
+  /* Typography: ${typography.name} | Best for: ${typography.bestFor} */
+  --font-heading: ${typography.headingFont};
+  --font-body: ${typography.bodyFont};
+  --font-weights: ${typography.weights};
+  --letter-heading: ${typography.letterSpacing};
+  --line-heading-desktop: ${typography.lineHeights.headingDesktop};
+  --line-heading-mobile: ${typography.lineHeights.headingMobile};
+  --line-body-desktop: ${typography.lineHeights.bodyDesktop};
+  --line-body-mobile: ${typography.lineHeights.bodyMobile};
+  --h1-desktop: ${typography.sizes.desktop.h1};
+  --h1-mobile: ${typography.sizes.mobile.h1};
+  --h2-desktop: ${typography.sizes.desktop.h2};
+  --h2-mobile: ${typography.sizes.mobile.h2};
+  --h3-desktop: ${typography.sizes.desktop.h3};
+  --h3-mobile: ${typography.sizes.mobile.h3};
+  --h4-desktop: ${typography.sizes.desktop.h4};
+  --h4-mobile: ${typography.sizes.mobile.h4};
+  --body-desktop: ${typography.sizes.desktop.body};
+  --body-mobile: ${typography.sizes.mobile.body};
+  --small-desktop: ${typography.sizes.desktop.small};
+  --small-mobile: ${typography.sizes.mobile.small};
+
+  /* Color scheme: ${color.name} | Type: ${color.bgType} | Best for: ${color.bestFor} */
+  --bg: ${ct.bg};
+  --surface: ${ct.surface};
+  --card: ${ct.card};
+  --text: ${ct.text};
+  --muted: ${ct.muted};
+  --primary: ${ct.primary};
+  --primary-hover: ${ct.primaryHover};
+  --accent: ${ct.accent};
+  --border: ${ct.border};
+
+  /* Spacing: ${spacing.name} */
+  --container: ${st.container};
+  --section-desktop: ${st.section};
+  --section-mobile: ${st.sectionMobile};
+  --gap-desktop: ${st.gap};
+  --gap-mobile: ${st.gapMobile};
+  --card-padding-desktop: ${st.cardPadding};
+  --card-padding-mobile: ${st.cardPaddingMobile};
+
+  /* Radius: ${radius.name} */
+  --radius-sm: ${rt.sm};
+  --radius-md: ${rt.md};
+  --radius-lg: ${rt.lg};
+  --radius-pill: ${rt.pill};
+
+  /* Button: ${button.name} */
+  --button-radius: ${bt.radius};
+  --button-shadow: ${bt.shadow};
+  --button-border: ${bt.border};
+  --button-text-transform: ${bt.case};
+
+  /* Card: ${card.name} */
+  --card-shadow: ${cdt.shadow};
+  --card-border: ${cdt.border};
+  --card-bg: ${cdt.background};
+  --card-blur: ${cdt.blur};
+
+  /* Optional background texture: ${texture.name} */
+  --texture-bg: ${texture.css};
+  --texture-size: ${texture.size || 'auto'};
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--body-desktop);
+  line-height: var(--line-body-desktop);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  line-height: var(--line-heading-desktop);
+  letter-spacing: var(--letter-heading);
+  color: var(--text);
+}
+h1 { font-size: var(--h1-desktop); }
+h2 { font-size: var(--h2-desktop); }
+h3 { font-size: var(--h3-desktop); }
+h4 { font-size: var(--h4-desktop); }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--button-radius);
+  border: var(--button-border);
+  box-shadow: var(--button-shadow);
+  text-transform: var(--button-text-transform);
+  background: var(--primary);
+  color: #fff;
+  padding: 13px 18px;
+  font-weight: 800;
+}
+
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding-desktop);
+  backdrop-filter: blur(var(--card-blur));
+}
+
+@media (max-width: 768px) {
+  body { font-size: var(--body-mobile); line-height: var(--line-body-mobile); }
+  h1, h2, h3, h4 { line-height: var(--line-heading-mobile); }
+  h1 { font-size: var(--h1-mobile); }
+  h2 { font-size: var(--h2-mobile); }
+  h3 { font-size: var(--h3-mobile); }
+  h4 { font-size: var(--h4-mobile); }
+  .section { padding-block: var(--section-mobile); }
+  .card { padding: var(--card-padding-mobile); }
+}`;
+    }
+
+    function generateJson() {
+      const payload = {
+        typography: byId(typographySets, state.typography), color: byId(colorSchemes, state.color), spacing: byId(spacingSystems, state.spacing),
+        radius: byId(radiusSystems, state.radius), button: byId(buttonStyles, state.button), card: byId(cardStyles, state.card), texture: byId(textures, state.texture), hero: byId(heroLayouts, state.hero)
+      };
+      return JSON.stringify(payload, null, 2);
+    }
+
+    function generateHeroHtml() {
+      return `<section class="hero">
+  <div class="hero-copy">
+    <span class="hero-eyebrow">${$('heroEyebrow').textContent}<\/span>
+    <h1>${$('heroHeadline').textContent}<\/h1>
+    <p>${$('heroText').textContent}<\/p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start with this system<\/a>
+      <a href="#" class="btn-secondary">View components<\/a>
+    <\/div>
+  <\/div>
+<\/section>`;
+    }
+
+    async function copyText(text) {
+      try { await navigator.clipboard.writeText(text); showToast('Copied to clipboard'); }
+      catch (e) { refs.codeOutput.focus(); refs.codeOutput.select(); document.execCommand('copy'); showToast('Copied'); }
+    }
+    function showToast(message) {
+      refs.toast.textContent = message; refs.toast.classList.add('show');
+      setTimeout(() => refs.toast.classList.remove('show'), 1400);
+    }
+
+    function wire() {
+      refs.presetSelect.addEventListener('change', e => applyPreset(e.target.value));
+      refs.siteFilter.addEventListener('input', e => {
+        state.typography = fillSelect(refs.typographySelect, typographySets, state.typography, e.target.value);
+        state.color = fillSelect(refs.colorSelect, colorSchemes, state.color, e.target.value);
+        refs.presetSelect.value = 'custom';
+        updateAll();
+      });
+      [
+        ['typographySelect','typography'], ['colorSelect','color'], ['spacingSelect','spacing'], ['radiusSelect','radius'], ['buttonSelect','button'], ['cardSelect','card'], ['textureSelect','texture'], ['heroSelect','hero']
+      ].forEach(([selectId, key]) => {
+        $(selectId).addEventListener('change', e => { state[key] = e.target.value; refs.presetSelect.value = 'custom'; updateAll(); });
+      });
+      $('desktopBtn').addEventListener('click', () => { state.device = 'desktop'; updateAll(); });
+      $('mobileBtn').addEventListener('click', () => { state.device = 'mobile'; updateAll(); });
+      $('copyCssTop').addEventListener('click', () => copyText(refs.codeOutput.value));
+      $('copyJson').addEventListener('click', () => copyText(generateJson()));
+      $('copyHero').addEventListener('click', () => copyText(generateHeroHtml()));
+    }
+
+    initSelects();
+    wire();
+    updateAll();
+  </script>
+</body>
+</html>
