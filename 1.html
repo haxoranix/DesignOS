@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design System Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17171b; --ink2:#3c3c44; --mut:#74747e; --faint:#9a9aa2;
+  --line:#e7e7e3; --line2:#dadad4; --paper:#fbfbf9; --paper2:#f2f2ee;
+  --card:#ffffff; --pin:#111114;
+  --ui:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:7px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--ui); color:var(--ink); background:var(--paper);
+  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--ink); outline-offset:2px; border-radius:3px}
+::selection{background:#111; color:#fff}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:40; background:rgba(251,251,249,.85);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:18px; padding:12px 20px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:baseline; gap:10px}
+.brand .dot{width:9px;height:9px;background:var(--ink);border-radius:2px;transform:translateY(-1px)}
+.brand h1{font-size:15px; font-weight:700; margin:0; letter-spacing:-.01em}
+.brand .sub{font-family:var(--mono); font-size:11px; color:var(--mut); letter-spacing:.02em}
+.tabs{display:flex; gap:2px; background:var(--paper2); padding:3px; border-radius:9px; border:1px solid var(--line)}
+.tab{
+  border:0; background:transparent; padding:7px 13px; border-radius:6px;
+  font-size:12.5px; font-weight:500; color:var(--mut); letter-spacing:-.005em;
+  display:flex; align-items:center; gap:6px;
+}
+.tab .n{font-family:var(--mono); font-size:10px; color:var(--faint)}
+.tab.active{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.tab.active .n{color:var(--ink2)}
+.spacer{flex:1}
+.tbtn{
+  border:1px solid var(--line2); background:var(--card); padding:7px 13px; border-radius:7px;
+  font-size:12.5px; font-weight:500; color:var(--ink); display:inline-flex; align-items:center; gap:7px;
+}
+.tbtn:hover{background:var(--paper2)}
+.tbtn.dark{background:var(--ink); color:#fff; border-color:var(--ink)}
+.tbtn.dark:hover{background:#000}
+.tbtn svg{width:14px;height:14px}
+
+/* ---------- layout ---------- */
+main{max-width:1360px; margin:0 auto; padding:22px 20px 80px}
+.view{display:none}
+.view.active{display:block}
+
+/* ---------- compose ---------- */
+.compose{display:grid; grid-template-columns:288px 1fr; gap:22px; align-items:start}
+.rail{
+  position:sticky; top:78px; display:flex; flex-direction:column; gap:16px;
+}
+.ctrl{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px}
+.ctrl h3{
+  margin:0 0 11px; font-size:10.5px; font-weight:600; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--mut); font-family:var(--mono);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.ctrl h3 .val{color:var(--ink); text-transform:none; letter-spacing:0; font-weight:500; font-size:11.5px}
+.pick{
+  width:100%; text-align:left; border:1px solid var(--line2); background:var(--paper);
+  border-radius:8px; padding:10px 11px; margin-bottom:7px; display:flex; align-items:center;
+  justify-content:space-between; gap:8px;
+}
+.pick:last-child{margin-bottom:0}
+.pick:hover{border-color:var(--ink2)}
+.pick.sel{border-color:var(--ink); background:var(--card); box-shadow:0 0 0 1px var(--ink) inset}
+.pick .lbl{font-weight:500; font-size:13px}
+.pick .meta{font-family:var(--mono); font-size:10px; color:var(--mut)}
+.seg{display:grid; grid-auto-flow:column; gap:3px; background:var(--paper2); border:1px solid var(--line); border-radius:9px; padding:3px}
+.seg button{border:0;background:transparent;border-radius:6px;padding:7px 6px;font-size:12px;font-weight:500;color:var(--mut)}
+.seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.07)}
+.swatchrow{display:flex; gap:4px; margin-top:9px}
+.swatchrow i{flex:1; height:20px; border-radius:4px; border:1px solid rgba(0,0,0,.06)}
+.mini{font-family:var(--mono); font-size:10.5px; color:var(--mut); line-height:1.7}
+.mini b{color:var(--ink); font-weight:500}
+
+/* stage */
+.stage-wrap{min-width:0}
+.stage-top{display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap}
+.stage-top .title{font-family:var(--mono); font-size:11px; color:var(--mut); letter-spacing:.03em}
+.device-seg{margin-left:auto}
+.stage{
+  border:1px solid var(--line2); border-radius:14px; background:var(--paper2);
+  padding:16px; overflow:hidden;
+}
+.viewport{
+  margin:0 auto; background:var(--pv-bg,#fff); border-radius:10px; overflow:hidden;
+  border:1px solid rgba(0,0,0,.08); transition:max-width .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 30px rgba(0,0,0,.07);
+}
+.viewport.desktop{max-width:100%}
+.viewport.mobile{max-width:390px}
+
+/* ---------- preview (namespaced) ---------- */
+#pv{ color:var(--pv-text); background:var(--pv-bg); font-family:var(--pv-body); }
+#pv .pv-nav{display:flex; align-items:center; justify-content:space-between; padding:var(--pv-navpad); border-bottom:1px solid var(--pv-border)}
+#pv .pv-logo{display:flex; align-items:center; gap:8px; font-family:var(--pv-head); font-weight:700; font-size:var(--pv-logo); color:var(--pv-text); letter-spacing:-.02em}
+#pv .pv-logo .mk{width:16px;height:16px;border-radius:5px;background:var(--pv-primary)}
+#pv .pv-links{display:flex; gap:var(--pv-gap); align-items:center; font-size:var(--pv-nav); color:var(--pv-muted)}
+#pv .pv-links a{color:var(--pv-muted); text-decoration:none}
+#pv .pv-links .m{display:none}
+#pv .pv-hero{padding:var(--pv-hpad); display:flex; flex-direction:column; align-items:var(--pv-align); text-align:var(--pv-talign)}
+#pv .pv-badge{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--pv-body); font-size:var(--pv-small);
+  color:var(--pv-primary); background:var(--pv-tint); border:1px solid var(--pv-border);
+  padding:5px 11px; border-radius:var(--pv-rpill); margin-bottom:var(--pv-s3); font-weight:500;
+}
+#pv .pv-badge .d{width:6px;height:6px;border-radius:50%;background:var(--pv-primary)}
+#pv .pv-h1{
+  font-family:var(--pv-head); font-size:var(--pv-display); line-height:var(--pv-headlh);
+  letter-spacing:var(--pv-track); font-weight:var(--pv-hw); margin:0 0 var(--pv-s3);
+  color:var(--pv-text); max-width:16em;
+}
+#pv .pv-sub{
+  font-family:var(--pv-body); font-size:var(--pv-lead); line-height:var(--pv-bodylh);
+  color:var(--pv-muted); margin:0 0 var(--pv-s5); max-width:34ch; font-weight:var(--pv-bw);
+}
+#pv .pv-cta{display:flex; gap:12px; flex-wrap:wrap; justify-content:var(--pv-cjust)}
+#pv .pv-stats{display:flex; gap:var(--pv-s6); margin-top:var(--pv-s6); flex-wrap:wrap; justify-content:var(--pv-cjust)}
+#pv .pv-stat .k{font-family:var(--pv-head); font-weight:700; font-size:var(--pv-h3); color:var(--pv-text)}
+#pv .pv-stat .v{font-family:var(--pv-body); font-size:var(--pv-small); color:var(--pv-muted)}
+#pv .pv-card{
+  margin:var(--pv-hpad); margin-top:0; background:var(--pv-surface); border:1px solid var(--pv-border);
+  border-radius:var(--pv-rlg); padding:var(--pv-s5); display:flex; gap:14px; align-items:center;
+}
+#pv .pv-card .ic{width:42px;height:42px;border-radius:var(--pv-rmd);background:var(--pv-tint);flex:none;display:flex;align-items:center;justify-content:center}
+#pv .pv-card .ic i{width:16px;height:16px;border-radius:4px;background:var(--pv-accent)}
+#pv .pv-card h4{font-family:var(--pv-head); margin:0 0 3px; font-size:var(--pv-h4); color:var(--pv-text); font-weight:600}
+#pv .pv-card p{font-family:var(--pv-body); margin:0; font-size:var(--pv-small); line-height:var(--pv-bodylh); color:var(--pv-muted)}
+
+/* buttons in preview */
+#pv .btn{font-family:var(--pv-body); font-size:var(--pv-btn); font-weight:600; cursor:pointer; border:0; padding:var(--pv-btnpad); display:inline-flex; align-items:center; gap:7px; transition:filter .12s, transform .06s; text-decoration:none}
+#pv .btn:active{transform:translateY(1px)}
+#pv .btn-primary{background:var(--pv-primary); color:var(--pv-pText); border-radius:var(--pv-rmd)}
+#pv .btn-primary:hover{filter:brightness(1.08)}
+#pv .btn-secondary{background:transparent; color:var(--pv-text); border-radius:var(--pv-rmd)}
+/* style variants applied via .bs-* on #pv */
+#pv.bs-solid .btn-secondary{border:1px solid var(--pv-border); background:var(--pv-surface)}
+#pv.bs-outline .btn-primary{background:transparent; color:var(--pv-primary); box-shadow:inset 0 0 0 1.5px var(--pv-primary)}
+#pv.bs-outline .btn-secondary{box-shadow:inset 0 0 0 1.5px var(--pv-border)}
+#pv.bs-soft .btn-primary{background:var(--pv-tint); color:var(--pv-primary)}
+#pv.bs-soft .btn-secondary{background:var(--pv-surface); color:var(--pv-text)}
+#pv.bs-ghost .btn-primary{background:transparent; color:var(--pv-primary)}
+#pv.bs-ghost .btn-primary:hover{background:var(--pv-tint); filter:none}
+#pv.bs-ghost .btn-secondary{color:var(--pv-muted)}
+#pv.bs-gradient .btn-primary{background:linear-gradient(120deg,var(--pv-primary),var(--pv-accent)); color:var(--pv-pText)}
+#pv.bs-pill .btn{border-radius:999px}
+#pv.bs-pill .btn-secondary{border:1px solid var(--pv-border)}
+#pv.bs-neu .btn{border-radius:0; border:2px solid var(--pv-text)}
+#pv.bs-neu .btn-primary{background:var(--pv-primary); color:var(--pv-pText); box-shadow:4px 4px 0 var(--pv-text)}
+#pv.bs-neu .btn-secondary{background:var(--pv-surface); color:var(--pv-text); box-shadow:4px 4px 0 var(--pv-text)}
+#pv.bs-neu .btn:active{box-shadow:1px 1px 0 var(--pv-text); transform:translate(3px,3px)}
+#pv.bs-underline .btn{padding-left:0; padding-right:0; border-radius:0}
+#pv.bs-underline .btn-primary{background:transparent; color:var(--pv-primary); border-bottom:2px solid var(--pv-primary)}
+#pv.bs-underline .btn-secondary{color:var(--pv-muted); border-bottom:2px solid transparent}
+
+/* mobile preview overrides */
+.viewport.mobile #pv .pv-links .d{display:none}
+.viewport.mobile #pv .pv-links .m{display:inline-flex}
+.viewport.mobile #pv .pv-h1{font-size:var(--pv-display-m); line-height:var(--pv-headlh-m); max-width:14em}
+.viewport.mobile #pv .pv-sub{font-size:var(--pv-lead-m); line-height:var(--pv-bodylh-m)}
+.viewport.mobile #pv .pv-hero{align-items:flex-start; text-align:left; padding:var(--pv-hpad-m)}
+.viewport.mobile #pv .pv-nav{padding:var(--pv-navpad-m)}
+.viewport.mobile #pv .pv-cta{justify-content:flex-start}
+.viewport.mobile #pv .pv-card{margin:var(--pv-hpad-m); margin-top:0; flex-direction:row}
+.viewport.mobile #pv .pv-badge{font-size:var(--pv-small-m)}
+
+/* ---------- spec datasheet ---------- */
+.sheet{margin-top:16px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.sheet .sh-head{padding:11px 15px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between}
+.sheet .sh-head b{font-size:13px; font-weight:600}
+.sheet .sh-head span{font-family:var(--mono); font-size:11px; color:var(--mut)}
+.grid2{display:grid; grid-template-columns:1fr 1fr}
+.dl{padding:13px 15px}
+.dl h5{margin:0 0 9px; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--mut)}
+.dl .row{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11.5px; padding:3px 0; border-bottom:1px dashed var(--line)}
+.dl .row:last-child{border-bottom:0}
+.dl .row span:first-child{color:var(--mut)}
+.dl .row span:last-child{color:var(--ink); font-weight:500}
+.dl .row.big span:last-child{font-size:12.5px}
+
+/* ---------- libraries ---------- */
+.filterbar{display:flex; gap:10px; align-items:center; margin-bottom:18px; flex-wrap:wrap; position:sticky; top:78px; z-index:20; background:linear-gradient(var(--paper) 70%, transparent); padding:6px 0}
+.search{position:relative}
+.search input{border:1px solid var(--line2); background:var(--card); border-radius:8px; padding:8px 12px 8px 32px; font-size:13px; font-family:var(--ui); width:230px}
+.search svg{position:absolute; left:10px; top:9px; width:14px; height:14px; color:var(--mut)}
+.chips{display:flex; gap:5px; flex-wrap:wrap}
+.chip{border:1px solid var(--line2); background:var(--card); border-radius:999px; padding:6px 12px; font-size:12px; color:var(--ink2); font-weight:500}
+.chip.on{background:var(--ink); color:#fff; border-color:var(--ink)}
+.count{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--mut)}
+
+.grid{display:grid; gap:16px}
+.tgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.cgrid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+
+/* type card */
+.tcard{background:var(--card); border:1px solid var(--line); border-radius:13px; overflow:hidden; display:flex; flex-direction:column}
+.tcard .tc-head{padding:13px 15px; display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.tcard .tc-name{font-size:14px; font-weight:600; letter-spacing:-.01em}
+.tcard .tc-vibe{font-family:var(--mono); font-size:10px; color:var(--mut); text-transform:uppercase; letter-spacing:.06em; margin-top:2px}
+.tcard .tc-sample{padding:0 15px 13px}
+.tcard .tc-disp{margin:0 0 6px; letter-spacing:-.015em}
+.tcard .tc-body{margin:0; color:var(--ink2)}
+.tcard .tc-spec{margin-top:auto; border-top:1px solid var(--line); background:var(--paper); padding:10px 15px; display:flex; gap:14px; font-family:var(--mono); font-size:10.5px; color:var(--mut); flex-wrap:wrap}
+.tcard .tc-spec b{color:var(--ink); font-weight:500}
+.tcard .tc-fonts{border-top:1px solid var(--line); padding:9px 15px; font-family:var(--mono); font-size:10.5px; color:var(--mut); display:flex; justify-content:space-between; align-items:center}
+.tcard .use{border:1px solid var(--line2); background:var(--card); border-radius:6px; padding:5px 10px; font-size:11px; font-weight:600; color:var(--ink)}
+.tcard .use:hover{background:var(--ink); color:#fff; border-color:var(--ink)}
+
+/* color card */
+.ccard{border:1px solid var(--line); border-radius:13px; overflow:hidden; background:var(--card)}
+.ccard .cc-pv{padding:16px 15px 14px}
+.ccard .cc-chip{display:inline-block; font-size:10px; font-family:var(--mono); padding:3px 8px; border-radius:999px; margin-bottom:11px}
+.ccard .cc-title{font-size:16px; font-weight:700; margin:0 0 4px; letter-spacing:-.015em}
+.ccard .cc-line{font-size:11.5px; margin:0 0 12px}
+.ccard .cc-btns{display:flex; gap:7px; margin-bottom:2px}
+.ccard .cc-b{font-size:11px; font-weight:600; padding:6px 12px; border-radius:7px}
+.ccard .cc-ramp{display:flex; height:26px}
+.ccard .cc-ramp i{flex:1; position:relative}
+.ccard .cc-foot{display:flex; align-items:center; justify-content:space-between; padding:9px 13px; border-top:1px solid var(--line)}
+.ccard .cc-name{font-size:12.5px; font-weight:600}
+.ccard .cc-vibe{font-family:var(--mono); font-size:10px; color:var(--mut)}
+.ccard .use{border:1px solid var(--line2); background:var(--card); border-radius:6px; padding:5px 10px; font-size:11px; font-weight:600; color:var(--ink)}
+.ccard .use:hover{background:var(--ink); color:#fff; border-color:var(--ink)}
+
+/* ---------- export ---------- */
+.export{display:grid; grid-template-columns:1fr; gap:16px; max-width:900px}
+.exhead{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px}
+.exhead .seg{margin-left:auto}
+.codebox{background:#17171b; border-radius:12px; overflow:hidden; border:1px solid #26262c}
+.codebox .cb-top{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #26262c}
+.codebox .cb-top span{font-family:var(--mono); font-size:11px; color:#9a9aa5}
+.codebox pre{margin:0; padding:16px; overflow:auto; max-height:460px; font-family:var(--mono); font-size:12px; line-height:1.65; color:#e4e4ea}
+.codebox .cbtn{border:1px solid #33333a; background:#222228; color:#e4e4ea; border-radius:6px; padding:5px 11px; font-size:11px; font-weight:500; display:inline-flex; gap:6px; align-items:center}
+.codebox .cbtn:hover{background:#2c2c33}
+.tok{color:#c9a2ff} .tok2{color:#8fd6a9} .tok3{color:#7fb2ff}
+
+.toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:10px 18px; border-radius:9px; font-size:13px; font-weight:500; opacity:0; pointer-events:none; transition:.25s; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+.hint{font-size:12px; color:var(--mut); line-height:1.6}
+.hint b{color:var(--ink2); font-weight:600}
+
+@media(max-width:900px){
+  .compose{grid-template-columns:1fr}
+  .rail{position:static}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="dot"></div>
+    <h1>Design System Workbench</h1>
+    <span class="sub" id="brandCount">loading…</span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-view="compose">Compose</button>
+    <button class="tab" data-view="type">Type Library <span class="n" id="tabT">0</span></button>
+    <button class="tab" data-view="color">Color Library <span class="n" id="tabC">0</span></button>
+    <button class="tab" data-view="export">Export</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="tbtn" id="randomize">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20" stroke-width="0"/><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="8" cy="16" r="1.4" fill="currentColor" stroke="none"/></svg>
+    Shuffle
+  </button>
+  <button class="tbtn dark" data-view="export" id="goExport">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+    Get tokens
+  </button>
+</header>
+
+<main>
+  <!-- COMPOSE -->
+  <section class="view active" id="view-compose">
+    <div class="compose">
+      <aside class="rail">
+        <div class="ctrl">
+          <h3>Typography <span class="val" id="cvType">–</span></h3>
+          <div id="typePicks"></div>
+        </div>
+        <div class="ctrl">
+          <h3>Color scheme <span class="val" id="cvColor">–</span></h3>
+          <div id="colorPicks"></div>
+          <div class="swatchrow" id="railSwatch"></div>
+        </div>
+        <div class="ctrl">
+          <h3>Spacing <span class="val" id="cvSpace">–</span></h3>
+          <div class="seg" id="spaceSeg"></div>
+        </div>
+        <div class="ctrl">
+          <h3>Radius <span class="val" id="cvRadius">–</span></h3>
+          <div class="seg" id="radiusSeg"></div>
+        </div>
+        <div class="ctrl">
+          <h3>Button style <span class="val" id="cvBtn">–</span></h3>
+          <div class="seg" id="btnSeg"></div>
+        </div>
+      </aside>
+
+      <div class="stage-wrap">
+        <div class="stage-top">
+          <span class="title">LIVE PREVIEW — hero section</span>
+          <div class="seg device-seg" id="deviceSeg">
+            <button data-d="desktop" class="on">Desktop</button>
+            <button data-d="mobile">Mobile</button>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="viewport desktop" id="viewport">
+            <div id="pv"></div>
+          </div>
+        </div>
+
+        <div class="sheet">
+          <div class="sh-head"><b id="sheetName">Specification</b><span id="sheetSub"></span></div>
+          <div class="grid2" id="sheetBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPE LIBRARY -->
+  <section class="view" id="view-type">
+    <div class="filterbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="typeSearch" placeholder="Search type sets or fonts" />
+      </div>
+      <div class="chips" id="typeChips"></div>
+      <span class="count" id="typeCount"></span>
+    </div>
+    <div class="grid tgrid" id="typeGrid"></div>
+  </section>
+
+  <!-- COLOR LIBRARY -->
+  <section class="view" id="view-color">
+    <div class="filterbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="colorSearch" placeholder="Search color schemes" />
+      </div>
+      <div class="chips" id="colorChips"></div>
+      <span class="count" id="colorCount"></span>
+    </div>
+    <div class="grid cgrid" id="colorGrid"></div>
+  </section>
+
+  <!-- EXPORT -->
+  <section class="view" id="view-export">
+    <div class="export">
+      <div class="exhead">
+        <div>
+          <b style="font-size:15px">Design tokens</b>
+          <p class="hint" style="margin:4px 0 0">The exact system for your current composition. Copy the CSS variables into your project, or hand the whole file to whoever picks the direction.</p>
+        </div>
+        <div class="seg" id="exSeg">
+          <button data-f="css" class="on">CSS variables</button>
+          <button data-f="json">JSON tokens</button>
+          <button data-f="tw">Tailwind</button>
+        </div>
+      </div>
+      <div class="codebox">
+        <div class="cb-top">
+          <span id="exFile">tokens.css</span>
+          <div style="display:flex;gap:8px">
+            <button class="cbtn" id="dlBtn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>Download</button>
+            <button class="cbtn" id="copyBtn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+          </div>
+        </div>
+        <pre id="exCode"></pre>
+      </div>
+      <p class="hint">Fonts load from Google Fonts. The <b>@import</b> line at the top of the CSS pulls the exact families and weights this composition uses.</p>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DESIGN SYSTEM WORKBENCH — data + logic
+   ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const pxr = v => Math.round(v*10)/10;
+
+/* ---------- font loading (lazy, deduped) ---------- */
+const FONTW = { 'Space Mono':'400;700', 'DM Mono':'400;500' };
+const SINGLE = new Set(['Anton','Bebas Neue','Archivo Black']);
+const loaded = new Set();
+function loadFont(family){
+  if(!family || loaded.has(family)) return;
+  loaded.add(family);
+  const base = 'https://fonts.googleapis.com/css2?family=' + family.replace(/ /g,'+');
+  let wq;
+  if(SINGLE.has(family)) wq = '';
+  else if(FONTW[family]) wq = ':wght@'+FONTW[family];
+  else wq = ':wght@400;500;600;700';
+  const l = document.createElement('link');
+  l.rel='stylesheet'; l.href = base + wq + '&display=swap';
+  document.head.appendChild(l);
+}
+const ff = (name)=> `'${name}', ${/Serif|Playfair|Fraunces|Lora|Newsreader|Spectral|Garamond|Crimson|Bitter|Domine|Frank|Cormorant|Baskerville/.test(name)?'serif':/Mono|Fira Code/.test(name)?'monospace':'sans-serif'}`;
+
+/* ---------- TYPOGRAPHY SETS (54) ---------- */
+const T=(name,vibe,head,body,o={})=>({name,vibe,head,body,
+  baseD:o.bd??18, baseM:o.bm??16.5, ratio:o.r??1.25,
+  hlhD:o.hd??1.1, hlhM:o.hm??((o.hd??1.1)+0.06),
+  blhD:o.yd??1.6, blhM:o.ym??((o.yd??1.6)+0.06),
+  track:o.tr??'-0.02em', hw:o.hw??700, bw:o.bw??400, mobDisp:o.md??0.62});
+
+const TYPES = [
+ T('Editorial Grand','Editorial','Playfair Display','Source Serif 4',{r:1.333,hd:1.05,yd:1.7,hw:800}),
+ T('Modern Serif','Editorial','Fraunces','Inter',{r:1.28,hd:1.08,hw:600,tr:'-0.015em'}),
+ T('Literary','Serif','Lora','Lora',{r:1.25,hd:1.15,yd:1.75,hw:600,tr:'0em'}),
+ T('Broadsheet','Editorial','Newsreader','Newsreader',{r:1.3,hd:1.08,yd:1.7,hw:700,tr:'-0.01em'}),
+ T('Neo-Grotesque','Grotesque','Inter','Inter',{r:1.25,hd:1.08,hw:700,tr:'-0.025em'}),
+ T('Geometric Bold','Geometric','Sora','Inter',{r:1.28,hd:1.05,hw:700,tr:'-0.03em'}),
+ T('Techno Grotesk','Technical','Space Grotesk','Inter',{r:1.26,hd:1.05,hw:600,tr:'-0.03em'}),
+ T('Humanist Warm','Humanist','Work Sans','Work Sans',{r:1.24,hd:1.12,yd:1.65,hw:600,tr:'-0.01em'}),
+ T('Product Sans','Corporate','Plus Jakarta Sans','Plus Jakarta Sans',{r:1.25,hd:1.1,hw:700,tr:'-0.02em'}),
+ T('Rounded Friendly','Playful','Figtree','Figtree',{r:1.24,hd:1.1,hw:700,tr:'-0.015em'}),
+ T('Editorial Contrast','Elegant','Cormorant Garamond','Inter',{r:1.4,hd:1.02,hw:600,tr:'-0.01em',bd:19}),
+ T('Slab Statement','Display','Zilla Slab','Inter',{r:1.3,hd:1.05,hw:700,tr:'-0.02em'}),
+ T('Grotesque XL','Grotesque','Archivo','Inter',{r:1.3,hd:1.02,hw:700,tr:'-0.035em'}),
+ T('Expressive Display','Display','Bricolage Grotesque','Inter',{r:1.32,hd:1.02,hw:800,tr:'-0.03em'}),
+ T('Kinetic','Display','Syne','Inter',{r:1.3,hd:1.0,hw:800,tr:'-0.02em'}),
+ T('Oversize','Display','Unbounded','Inter',{r:1.34,hd:0.98,hw:700,tr:'-0.02em'}),
+ T('Condensed Impact','Condensed','Anton','Inter',{r:1.4,hd:0.95,hw:400,tr:'-0.01em'}),
+ T('Poster','Condensed','Bebas Neue','Inter',{r:1.5,hd:0.92,hw:400,tr:'0.01em'}),
+ T('Heavy Black','Display','Archivo Black','Inter',{r:1.3,hd:1.0,hw:400,tr:'-0.03em'}),
+ T('Mono Technical','Mono','JetBrains Mono','JetBrains Mono',{r:1.24,hd:1.15,yd:1.7,hw:600,tr:'-0.02em'}),
+ T('Retro Mono','Mono','Space Mono','Inter',{r:1.28,hd:1.1,hw:700,tr:'-0.01em'}),
+ T('Plex Systems','Technical','IBM Plex Mono','Inter',{r:1.26,hd:1.12,hw:600,tr:'-0.01em'}),
+ T('Elegant Editorial','Elegant','Spectral','Spectral',{r:1.3,hd:1.1,yd:1.72,hw:600,tr:'-0.005em'}),
+ T('Garamond Classic','Serif','EB Garamond','EB Garamond',{r:1.28,hd:1.12,yd:1.72,hw:600,tr:'0em',bd:19}),
+ T('Crimson Book','Serif','Crimson Pro','Crimson Pro',{r:1.3,hd:1.1,yd:1.75,hw:600,tr:'0em',bd:19}),
+ T('Soft Sans','Humanist','DM Sans','DM Sans',{r:1.24,hd:1.1,hw:700,tr:'-0.025em'}),
+ T('Clean Corporate','Corporate','Public Sans','Public Sans',{r:1.25,hd:1.1,hw:700,tr:'-0.015em'}),
+ T('Lexend Clarity','Humanist','Lexend','Lexend',{r:1.24,hd:1.12,hw:600,tr:'-0.01em'}),
+ T('Manrope Modern','Geometric','Manrope','Manrope',{r:1.26,hd:1.08,hw:700,tr:'-0.02em'}),
+ T('Outfit Minimal','Geometric','Outfit','Outfit',{r:1.26,hd:1.08,hw:600,tr:'-0.02em'}),
+ T('Epilogue Edge','Grotesque','Epilogue','Inter',{r:1.28,hd:1.05,hw:700,tr:'-0.03em'}),
+ T('Hanken Neutral','Humanist','Hanken Grotesk','Hanken Grotesk',{r:1.25,hd:1.1,hw:700,tr:'-0.015em'}),
+ T('Albert Clean','Grotesque','Albert Sans','Albert Sans',{r:1.25,hd:1.08,hw:700,tr:'-0.02em'}),
+ T('Onest Simple','Humanist','Onest','Onest',{r:1.24,hd:1.1,hw:600,tr:'-0.015em'}),
+ T('Instrument Editorial','Editorial','Instrument Sans','Instrument Sans',{r:1.27,hd:1.08,hw:600,tr:'-0.02em'}),
+ T('Schibsted News','Corporate','Schibsted Grotesk','Inter',{r:1.27,hd:1.06,hw:700,tr:'-0.02em'}),
+ T('Red Hat Tech','Technical','Red Hat Display','Red Hat Display',{r:1.25,hd:1.1,hw:700,tr:'-0.015em'}),
+ T('Poppins Pop','Playful','Poppins','Poppins',{r:1.25,hd:1.1,hw:600,tr:'-0.01em'}),
+ T('Montserrat Brand','Corporate','Montserrat','Montserrat',{r:1.26,hd:1.08,hw:700,tr:'-0.005em'}),
+ T('Rubik Blocks','Playful','Rubik','Rubik',{r:1.25,hd:1.1,hw:600,tr:'-0.005em'}),
+ T('Nunito Soft','Playful','Nunito Sans','Nunito Sans',{r:1.24,hd:1.12,hw:700,tr:'-0.005em'}),
+ T('Chivo Grot','Grotesque','Chivo','Chivo',{r:1.27,hd:1.06,hw:700,tr:'-0.02em'}),
+ T('Familjen','Grotesque','Familjen Grotesk','Familjen Grotesk',{r:1.26,hd:1.08,hw:700,tr:'-0.02em'}),
+ T('Bitter Slab','Serif','Bitter','Inter',{r:1.27,hd:1.1,yd:1.65,hw:700,tr:'-0.01em'}),
+ T('Domine Read','Serif','Domine','Inter',{r:1.28,hd:1.12,yd:1.68,hw:600,tr:'0em'}),
+ T('Frank Modern','Serif','Frank Ruhl Libre','Inter',{r:1.3,hd:1.08,hw:800,tr:'-0.01em'}),
+ T('Fraunces Soft','Elegant','Fraunces','Fraunces',{r:1.29,hd:1.06,yd:1.7,hw:500,tr:'-0.01em'}),
+ T('Playfair Duo','Editorial','Playfair Display','Work Sans',{r:1.32,hd:1.04,hw:700,tr:'-0.015em'}),
+ T('Big Shoulders','Condensed','Big Shoulders Display','Inter',{r:1.36,hd:0.98,hw:700,tr:'0em'}),
+ T('Sora Space','Geometric','Sora','Sora',{r:1.27,hd:1.05,hw:700,tr:'-0.025em'}),
+ T('Space Duo','Technical','Space Grotesk','Space Mono',{r:1.27,hd:1.05,hw:600,tr:'-0.02em'}),
+ T('Fira Systems','Mono','Fira Code','Inter',{r:1.25,hd:1.12,hw:600,tr:'-0.01em'}),
+ T('Compact UI','Grotesque','Inter','Inter',{r:1.2,hd:1.15,yd:1.55,hw:600,tr:'-0.015em',bd:16.5}),
+ T('Giant Editorial','Editorial','Fraunces','Source Serif 4',{r:1.4,hd:1.0,yd:1.7,hw:600,tr:'-0.02em',bd:19}),
+];
+
+function computeType(t){
+  const step=(b,n)=>b*Math.pow(t.ratio,n);
+  const D=t.baseD, M=t.baseM;
+  const displayD=pxr(step(D,4));
+  return {
+    displayD, displayM:pxr(displayD*t.mobDisp),
+    leadD:pxr(step(D,0.7)), leadM:pxr(step(M,0.6)),
+    h3:pxr(step(D,2)), h4:pxr(step(D,1)),
+    bodyD:pxr(D), bodyM:pxr(M),
+    smallD:pxr(step(D,-0.9)), smallM:pxr(step(M,-0.95)),
+    nav:pxr(step(D,-0.2)), logo:pxr(step(D,0.55)), btn:pxr(step(D,-0.1)),
+    hlhD:t.hlhD, hlhM:t.hlhM, blhD:t.blhD, blhM:t.blhM,
+    track:t.track, hw:t.hw, bw:t.bw
+  };
+}
+
+/* ---------- COLOR (52 palettes via coherent generator) ---------- */
+function hslToHex(h,s,l){
+  s/=100; l/=100;
+  const k=n=>(n+h/30)%12;
+  const a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,9-k(n),1));
+  const g=x=>Math.round(255*x).toString(16).padStart(2,'0');
+  return '#'+g(f(0))+g(f(8))+g(f(4));
+}
+function lum(hex){
+  const c=hex.replace('#',''); const r=parseInt(c.substr(0,2),16)/255,
+  gg=parseInt(c.substr(2,2),16)/255, b=parseInt(c.substr(4,2),16)/255;
+  const a=[r,gg,b].map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));
+  return .2126*a[0]+.7152*a[1]+.0722*a[2];
+}
+const onColor = hex => lum(hex)>0.5 ? '#151519' : '#ffffff';
+
+function makePalette(seed){
+  const [name,vibe,mode,h,s,ph,ps,ah,as]=seed;
+  let p;
+  if(mode==='light'){
+    p={
+      bg:hslToHex(h, s*0.55, 98),
+      surface:hslToHex(h, s*0.4, 100),
+      surfaceAlt:hslToHex(h, s*0.6, 95.5),
+      text:hslToHex(h, Math.min(s+6,22), 13),
+      muted:hslToHex(h, s*0.6, 44),
+      border:hslToHex(h, s*0.7, 88.5),
+      primary:hslToHex(ph, ps, 47),
+      accent:hslToHex(ah, as, 52),
+      tint:hslToHex(ph, Math.min(ps,58), 93.5)
+    };
+  } else {
+    p={
+      bg:hslToHex(h, s+6, 8),
+      surface:hslToHex(h, s+5, 11.5),
+      surfaceAlt:hslToHex(h, s+4, 16),
+      text:hslToHex(h, 12, 96),
+      muted:hslToHex(h, 8, 66),
+      border:hslToHex(h, s+4, 22),
+      primary:hslToHex(ph, Math.min(ps+6,90), 62),
+      accent:hslToHex(ah, as, 64),
+      tint:hslToHex(ph, Math.max(ps*0.55,8), 19)
+    };
+  }
+  p.pText=onColor(p.primary);
+  p.name=name; p.vibe=vibe; p.mode=mode;
+  return p;
+}
+
+const PSEEDS=[
+ ['Ink & Paper','Minimal','light',35,8, 35,10, 15,60],
+ ['Graphite','Minimal','light',220,6, 220,8, 210,55],
+ ['Warm Sand','Warm','light',32,28, 22,55, 8,62],
+ ['Terracotta','Warm','light',24,30, 14,68, 32,55],
+ ['Clay Studio','Earthy','light',28,22, 18,45, 140,30],
+ ['Olive Grove','Nature','light',80,20, 96,45, 40,55],
+ ['Forest','Nature','light',150,18, 158,48, 40,60],
+ ['Sage','Nature','light',140,16, 150,32, 30,50],
+ ['Ocean','Cool','light',210,18, 214,72, 190,65],
+ ['Azure','Cool','light',215,20, 222,80, 260,60],
+ ['Indigo Pro','Corporate','light',230,14, 244,70, 265,65],
+ ['Royal','Vibrant','light',250,16, 258,72, 320,60],
+ ['Violet Mist','Pastel','light',270,18, 272,55, 210,50],
+ ['Berry','Vibrant','light',330,18, 336,70, 20,70],
+ ['Rose','Pastel','light',345,22, 344,60, 275,45],
+ ['Coral Pop','Playful','light',10,26, 6,72, 190,60],
+ ['Sunset','Warm','light',18,30, 24,78, 340,60],
+ ['Amber','Warm','light',38,40, 36,82, 20,60],
+ ['Gold Leaf','Editorial','light',40,24, 42,55, 30,45],
+ ['Lemon Fresh','Playful','light',55,30, 84,60, 200,60],
+ ['Mint','Cool','light',165,20, 168,58, 285,45],
+ ['Teal Deep','Cool','light',185,20, 188,70, 165,60],
+ ['Aqua','Cool','light',190,24, 194,72, 320,55],
+ ['Slate Blue','Corporate','light',215,12, 218,45, 200,40],
+ ['Lavender Soft','Pastel','light',255,16, 258,48, 190,45],
+ ['Blush','Pastel','light',350,16, 348,50, 40,50],
+ ['Peach','Warm','light',22,28, 18,58, 180,45],
+ ['Cocoa','Earthy','light',25,18, 20,35, 35,50],
+ ['Moss','Nature','light',110,18, 120,40, 45,55],
+ ['Cobalt','Vibrant','light',225,22, 228,85, 45,70],
+ ['Fuchsia','Vibrant','light',315,20, 320,78, 180,60],
+ ['Editorial Mono','Editorial','light',40,4, 40,6, 0,70],
+ ['Newsprint','Editorial','light',45,8, 45,10, 210,50],
+ ['Pistachio','Playful','light',95,22, 100,45, 330,50],
+ ['Sky','Cool','light',205,20, 205,78, 45,70],
+ ['Midnight','Dark','dark',225,14, 222,80, 265,70],
+ ['Carbon','Dark','dark',220,6, 210,10, 190,60],
+ ['Obsidian','Minimal','dark',30,6, 35,12, 20,65],
+ ['Deep Space','Dark','dark',250,16, 258,75, 300,65],
+ ['Emerald Night','Nature','dark',160,16, 158,60, 45,65],
+ ['Forest Dark','Nature','dark',150,14, 150,50, 90,50],
+ ['Cyber Teal','Vibrant','dark',185,18, 178,75, 300,70],
+ ['Neon Violet','Vibrant','dark',270,18, 272,80, 190,75],
+ ['Crimson Dark','Warm','dark',350,16, 352,72, 30,70],
+ ['Ember','Warm','dark',20,18, 20,80, 40,70],
+ ['Gold Noir','Editorial','dark',40,10, 42,60, 30,50],
+ ['Royal Dark','Corporate','dark',235,16, 244,72, 265,65],
+ ['Slate Night','Corporate','dark',215,10, 214,55, 190,50],
+ ['Plum','Vibrant','dark',300,16, 306,65, 200,60],
+ ['Ocean Dark','Cool','dark',210,16, 210,75, 170,60],
+ ['Mono Dark','Mono','dark',0,0, 0,0, 0,0],
+ ['Ink Dark','Minimal','dark',230,8, 228,30, 220,45],
+];
+const PALETTES = PSEEDS.map(makePalette);
+
+/* ---------- SPACING / RADIUS / BUTTONS ---------- */
+const SPACING=[
+ {name:'Compact',unit:4, s3:8,s5:14,s6:20, gap:'20px', navpad:'12px 20px', hpad:'40px 24px', navpadM:'12px 16px', hpadM:'32px 18px', btnpad:'9px 16px'},
+ {name:'Default',unit:4, s3:12,s5:20,s6:28, gap:'26px', navpad:'16px 28px', hpad:'64px 40px', navpadM:'14px 18px', hpadM:'44px 20px', btnpad:'11px 20px'},
+ {name:'Comfortable',unit:4, s3:16,s5:26,s6:36, gap:'30px', navpad:'20px 32px', hpad:'88px 48px', navpadM:'16px 20px', hpadM:'56px 22px', btnpad:'13px 24px'},
+ {name:'Spacious',unit:8, s3:20,s5:32,s6:48, gap:'34px', navpad:'24px 40px', hpad:'116px 56px', navpadM:'18px 22px', hpadM:'68px 24px', btnpad:'14px 28px'},
+ {name:'Airy',unit:8, s3:26,s5:40,s6:60, gap:'38px', navpad:'28px 48px', hpad:'150px 64px', navpadM:'20px 24px', hpadM:'84px 26px', btnpad:'16px 32px'},
+];
+const RADIUS=[
+ {name:'None',md:0,lg:0,pill:0},
+ {name:'Subtle',md:4,lg:7,pill:999},
+ {name:'Rounded',md:8,lg:13,pill:999},
+ {name:'Soft',md:12,lg:18,pill:999},
+ {name:'Large',md:16,lg:26,pill:999},
+];
+const BUTTONS=[
+ {id:'solid',name:'Solid'},{id:'outline',name:'Outline'},{id:'soft',name:'Soft'},
+ {id:'ghost',name:'Ghost'},{id:'gradient',name:'Gradient'},{id:'pill',name:'Pill'},
+ {id:'neu',name:'Neubrutal'},{id:'underline',name:'Link'},
+];
+
+/* ---------- STATE ---------- */
+const state={ type:1, color:0, space:1, radius:2, btn:0, device:'desktop' };
+
+/* ---------- PREVIEW ---------- */
+const PV_HTML = `
+<div class="pv-nav">
+  <div class="pv-logo"><span class="mk"></span>Northwind</div>
+  <div class="pv-links"><a class="d">Product</a><a class="d">Customers</a><a class="d">Pricing</a><a class="d">Docs</a><span class="m">≡</span></div>
+</div>
+<div class="pv-hero">
+  <div class="pv-badge"><span class="d"></span>New — v2 is out</div>
+  <h1 class="pv-h1">Design once, ship it everywhere with confidence</h1>
+  <p class="pv-sub">One source of truth for type, color, spacing and shape. Compose a direction, preview it live, then export the tokens your team builds from.</p>
+  <div class="pv-cta">
+    <a class="btn btn-primary">Start free</a>
+    <a class="btn btn-secondary">See how it works</a>
+  </div>
+  <div class="pv-stats">
+    <div class="pv-stat"><div class="k">12k+</div><div class="v">teams building</div></div>
+    <div class="pv-stat"><div class="k">99.9%</div><div class="v">uptime</div></div>
+    <div class="pv-stat"><div class="k">4.9/5</div><div class="v">rated by users</div></div>
+  </div>
+</div>
+<div class="pv-card">
+  <div class="ic"><i></i></div>
+  <div><h4>Everything stays in sync</h4><p>Change one dial and every surface, label and control updates together. No drift, no guesswork.</p></div>
+</div>`;
+
+function applyPreview(){
+  const t=TYPES[state.type], c=PALETTES[state.color], sp=SPACING[state.space], r=RADIUS[state.radius], b=BUTTONS[state.btn];
+  const m=computeType(t);
+  loadFont(t.head); loadFont(t.body);
+  const pv=$('#pv');
+  const set=(k,v)=>pv.style.setProperty(k,v);
+  // fonts
+  set('--pv-head',ff(t.head)); set('--pv-body',ff(t.body));
+  // colors
+  set('--pv-bg',c.bg); set('--pv-text',c.text); set('--pv-muted',c.muted);
+  set('--pv-border',c.border); set('--pv-surface',c.surface);
+  set('--pv-primary',c.primary); set('--pv-pText',c.pText);
+  set('--pv-accent',c.accent); set('--pv-tint',c.tint);
+  $('#viewport').style.setProperty('--pv-bg',c.bg);
+  // type sizes
+  set('--pv-display',m.displayD+'px'); set('--pv-display-m',m.displayM+'px');
+  set('--pv-lead',m.leadD+'px'); set('--pv-lead-m',m.leadM+'px');
+  set('--pv-h3',m.h3+'px'); set('--pv-h4',m.h4+'px');
+  set('--pv-small',m.smallD+'px'); set('--pv-small-m',m.smallM+'px');
+  set('--pv-nav',m.nav+'px'); set('--pv-logo',m.logo+'px'); set('--pv-btn',m.btn+'px');
+  set('--pv-headlh',m.hlhD); set('--pv-headlh-m',m.hlhM);
+  set('--pv-bodylh',m.blhD); set('--pv-bodylh-m',m.blhM);
+  set('--pv-track',m.track); set('--pv-hw',m.hw); set('--pv-bw',m.bw);
+  // spacing
+  set('--pv-gap',sp.gap); set('--pv-s3',sp.s3+'px'); set('--pv-s5',sp.s5+'px'); set('--pv-s6',sp.s6+'px');
+  set('--pv-navpad',sp.navpad); set('--pv-navpad-m',sp.navpadM);
+  set('--pv-hpad',sp.hpad); set('--pv-hpad-m',sp.hpadM); set('--pv-btnpad',sp.btnpad);
+  // radius
+  set('--pv-rmd',r.md+'px'); set('--pv-rlg',r.lg+'px'); set('--pv-rpill',r.pill+'px');
+  // alignment
+  set('--pv-align','center'); set('--pv-talign','center'); set('--pv-cjust','center');
+  // button style class
+  pv.className=''; pv.classList.add('bs-'+b.id);
+  // device
+  const vp=$('#viewport'); vp.classList.toggle('mobile',state.device==='mobile'); vp.classList.toggle('desktop',state.device==='desktop');
+}
+
+/* ---------- RAIL ---------- */
+function renderRail(){
+  const t=TYPES[state.type], c=PALETTES[state.color];
+  $('#cvType').textContent=t.vibe;
+  $('#cvColor').textContent=c.vibe;
+  $('#cvSpace').textContent=SPACING[state.space].name;
+  $('#cvRadius').textContent=RADIUS[state.radius].name;
+  $('#cvBtn').textContent=BUTTONS[state.btn].name;
+
+  $('#typePicks').innerHTML=`
+    <button class="pick sel" data-act="type-browse">
+      <div><div class="lbl">${t.name}</div><div class="meta">${t.head} · ${t.body}</div></div>
+      <span style="font-family:${ff(t.head)};font-size:22px;font-weight:${t.hw};line-height:1">Aa</span>
+    </button>
+    <div class="seg" style="margin-top:8px">
+      <button data-act="type-prev">‹ Prev</button>
+      <button data-act="type-browse">Browse 54</button>
+      <button data-act="type-next">Next ›</button>
+    </div>`;
+  loadFont(t.head);
+
+  $('#colorPicks').innerHTML=`
+    <button class="pick sel" data-act="color-browse">
+      <div><div class="lbl">${c.name}</div><div class="meta">${c.mode} · ${c.vibe}</div></div>
+      <span style="width:34px;height:22px;border-radius:5px;background:${c.primary};border:1px solid rgba(0,0,0,.1)"></span>
+    </button>
+    <div class="seg" style="margin-top:8px">
+      <button data-act="color-prev">‹ Prev</button>
+      <button data-act="color-browse">Browse 52</button>
+      <button data-act="color-next">Next ›</button>
+    </div>`;
+  $('#railSwatch').innerHTML=[c.bg,c.surfaceAlt,c.text,c.primary,c.accent,c.border].map(x=>`<i style="background:${x}"></i>`).join('');
+
+  segFill('#spaceSeg',SPACING.map(s=>s.name),state.space,'space');
+  segFill('#radiusSeg',RADIUS.map(s=>s.name),state.radius,'radius');
+  segFill('#btnSeg',BUTTONS.map(s=>s.name),state.btn,'btn');
+}
+function segFill(sel,labels,active,group){
+  $(sel).innerHTML=labels.map((l,i)=>`<button data-group="${group}" data-idx="${i}" class="${i===active?'on':''}">${l}</button>`).join('');
+}
+
+/* ---------- SPEC SHEET ---------- */
+function renderSheet(){
+  const t=TYPES[state.type], c=PALETTES[state.color], sp=SPACING[state.space], r=RADIUS[state.radius], b=BUTTONS[state.btn];
+  const m=computeType(t);
+  $('#sheetName').textContent=`${t.name}  ×  ${c.name}`;
+  $('#sheetSub').textContent=`${c.mode} · ${sp.name} space · ${r.name} radius`;
+  const row=(k,v,big)=>`<div class="row ${big?'big':''}"><span>${k}</span><span>${v}</span></div>`;
+  const dm=(d,mo)=>`${d} / ${mo}`;
+  $('#sheetBody').innerHTML=`
+   <div class="dl">
+     <h5>Typography — desktop / mobile</h5>
+     ${row('Display (h1)',dm(m.displayD+'px',m.displayM+'px'),1)}
+     ${row('Lead',dm(m.leadD+'px',m.leadM+'px'))}
+     ${row('Body',dm(m.bodyD+'px',m.bodyM+'px'))}
+     ${row('Small',dm(m.smallD+'px',m.smallM+'px'))}
+     ${row('Heading line-ht',dm(m.hlhD,m.hlhM))}
+     ${row('Body line-ht',dm(m.blhD,m.blhM))}
+     ${row('Scale ratio',t.ratio)}
+     ${row('Tracking',t.track)}
+     ${row('Weights','head '+t.hw+' / body '+t.bw)}
+   </div>
+   <div class="dl" style="border-left:1px solid var(--line)">
+     <h5>Palette &amp; system</h5>
+     ${row('Background',swatch(c.bg))}
+     ${row('Surface',swatch(c.surface))}
+     ${row('Text',swatch(c.text))}
+     ${row('Primary',swatch(c.primary))}
+     ${row('Accent',swatch(c.accent))}
+     ${row('Border',swatch(c.border))}
+     ${row('Spacing base',sp.unit+'px · '+sp.name)}
+     ${row('Radius',r.md+'px / '+r.lg+'px')}
+     ${row('Buttons',b.name)}
+   </div>`;
+}
+function swatch(hex){return `<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.15);background:${hex}"></span>${hex}</span>`;}
+
+/* ---------- LIBRARIES ---------- */
+let typeFilter='All', colorFilter='All', typeQ='', colorQ='';
+const typeVibes=['All',...new Set(TYPES.map(t=>t.vibe))];
+const colorVibes=['All','light','dark',...new Set(PALETTES.map(p=>p.vibe))];
+
+function renderChips(sel,arr,active,group){
+  $(sel).innerHTML=arr.map(v=>`<button class="chip ${v===active?'on':''}" data-chip="${group}" data-val="${v}">${v}</button>`).join('');
+}
+
+const typeIO = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const f=e.target.dataset.fonts.split('|');f.forEach(loadFont);typeIO.unobserve(e.target);}})},{rootMargin:'200px'});
+
+function renderTypeGrid(){
+  const q=typeQ.toLowerCase();
+  const list=TYPES.map((t,i)=>({t,i})).filter(({t})=>
+    (typeFilter==='All'||t.vibe===typeFilter) &&
+    (t.name.toLowerCase().includes(q)||t.head.toLowerCase().includes(q)||t.body.toLowerCase().includes(q)||t.vibe.toLowerCase().includes(q)));
+  $('#typeCount').textContent=list.length+' sets';
+  $('#typeGrid').innerHTML=list.map(({t,i})=>{
+    const m=computeType(t);
+    return `<div class="tcard" data-fonts="${t.head}|${t.body}">
+      <div class="tc-head">
+        <div><div class="tc-name">${t.name}</div><div class="tc-vibe">${t.vibe}</div></div>
+        <button class="use" data-use-type="${i}">Use →</button>
+      </div>
+      <div class="tc-sample">
+        <div class="tc-disp" style="font-family:${ff(t.head)};font-weight:${t.hw};font-size:${Math.min(m.h3,34)}px;line-height:${t.hlhD};letter-spacing:${t.track}">Ship with a system</div>
+        <p class="tc-body" style="font-family:${ff(t.body)};font-weight:${t.bw};font-size:14px;line-height:${t.blhD}">The quick brown fox jumps over a lazy dog while thirty-two designers argue about kerning.</p>
+      </div>
+      <div class="tc-spec">
+        <span>H1 <b>${m.displayD}/${m.displayM}</b></span>
+        <span>lh <b>${t.hlhD}/${m.hlhM}</b></span>
+        <span>ratio <b>${t.ratio}</b></span>
+        <span>trk <b>${t.track}</b></span>
+      </div>
+      <div class="tc-fonts"><span>${t.head} · ${t.body}</span></div>
+    </div>`;
+  }).join('');
+  $$('#typeGrid .tcard').forEach(el=>typeIO.observe(el));
+}
+
+function renderColorGrid(){
+  const q=colorQ.toLowerCase();
+  const list=PALETTES.map((p,i)=>({p,i})).filter(({p})=>
+    (colorFilter==='All'||p.vibe===colorFilter||p.mode===colorFilter) &&
+    (p.name.toLowerCase().includes(q)||p.vibe.toLowerCase().includes(q)));
+  $('#colorCount').textContent=list.length+' schemes';
+  $('#colorGrid').innerHTML=list.map(({p,i})=>`
+    <div class="ccard">
+      <div class="cc-pv" style="background:${p.bg}">
+        <span class="cc-chip" style="background:${p.tint};color:${p.primary}">${p.mode}</span>
+        <h3 class="cc-title" style="color:${p.text}">${p.name}</h3>
+        <p class="cc-line" style="color:${p.muted}">Aa Bb Cc — the whole surface, one coherent scheme.</p>
+        <div class="cc-btns">
+          <span class="cc-b" style="background:${p.primary};color:${p.pText}">Primary</span>
+          <span class="cc-b" style="background:${p.surface};color:${p.text};border:1px solid ${p.border}">Surface</span>
+        </div>
+      </div>
+      <div class="cc-ramp">
+        ${[p.bg,p.surfaceAlt,p.border,p.muted,p.text,p.primary,p.accent].map(x=>`<i style="background:${x}"></i>`).join('')}
+      </div>
+      <div class="cc-foot">
+        <div><div class="cc-name">${p.name}</div><div class="cc-vibe">${p.vibe}</div></div>
+        <button class="use" data-use-color="${i}">Use →</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ---------- EXPORT ---------- */
+let exFormat='css';
+function clampCss(m,d){
+  return `clamp(${m}px, calc(${m}px + (${d} - ${m}) * ((100vw - 390px) / 1050)), ${d}px)`;
+}
+function fontImport(t){
+  const fam=f=>{
+    if(SINGLE.has(f)) return f.replace(/ /g,'+');
+    const w=FONTW[f]||'400;500;600;700';
+    return f.replace(/ /g,'+')+':wght@'+w;
+  };
+  const set=[...new Set([t.head,t.body])];
+  return `https://fonts.googleapis.com/css2?family=`+set.map(fam).join('&family=')+`&display=swap`;
+}
+function buildExport(){
+  const t=TYPES[state.type], c=PALETTES[state.color], sp=SPACING[state.space], r=RADIUS[state.radius], b=BUTTONS[state.btn];
+  const m=computeType(t);
+  if(exFormat==='css'){
+    $('#exFile').textContent='tokens.css';
+    return `/* ${t.name} × ${c.name} — generated by Design System Workbench */
+@import url('${fontImport(t)}');
+
+:root {
+  /* Color */
+  --color-bg: ${c.bg};
+  --color-surface: ${c.surface};
+  --color-surface-alt: ${c.surfaceAlt};
+  --color-text: ${c.text};
+  --color-text-muted: ${c.muted};
+  --color-border: ${c.border};
+  --color-primary: ${c.primary};
+  --color-on-primary: ${c.pText};
+  --color-accent: ${c.accent};
+  --color-primary-tint: ${c.tint};
+
+  /* Typography */
+  --font-heading: ${ff(t.head)};
+  --font-body: ${ff(t.body)};
+  --text-display: ${clampCss(m.displayM,m.displayD)};
+  --text-h2: ${clampCss(pxr(m.h3*1.25),pxr(m.displayD*0.62))};
+  --text-h3: ${m.h3}px;
+  --text-h4: ${m.h4}px;
+  --text-lead: ${clampCss(m.leadM,m.leadD)};
+  --text-body: ${m.bodyD}px;
+  --text-small: ${m.smallD}px;
+  --leading-heading: ${m.hlhD};
+  --leading-heading-mobile: ${m.hlhM};
+  --leading-body: ${m.blhD};
+  --leading-body-mobile: ${m.blhM};
+  --tracking-heading: ${m.track};
+  --weight-heading: ${m.hw};
+  --weight-body: ${m.bw};
+
+  /* Spacing (base ${sp.unit}px · ${sp.name}) */
+  --space-xs: ${sp.unit}px;
+  --space-sm: ${sp.unit*2}px;
+  --space-md: ${sp.s3}px;
+  --space-lg: ${sp.s5}px;
+  --space-xl: ${sp.s6}px;
+  --space-section: ${sp.hpad};
+
+  /* Radius (${r.name}) */
+  --radius-sm: ${Math.max(r.md-4,0)}px;
+  --radius-md: ${r.md}px;
+  --radius-lg: ${r.lg}px;
+  --radius-pill: ${r.pill}px;
+
+  /* Button (${b.name}) */
+  --btn-padding: ${sp.btnpad};
+  --btn-radius: ${b.id==='pill'?'999px':b.id==='neu'||b.id==='underline'?'0px':'var(--radius-md)'};
+  --btn-weight: 600;
+}`;
+  }
+  if(exFormat==='json'){
+    $('#exFile').textContent='tokens.json';
+    const obj={
+      meta:{typography:t.name,color:c.name,mode:c.mode,spacing:sp.name,radius:r.name,button:b.name},
+      color:{bg:c.bg,surface:c.surface,surfaceAlt:c.surfaceAlt,text:c.text,textMuted:c.muted,border:c.border,primary:c.primary,onPrimary:c.pText,accent:c.accent,primaryTint:c.tint},
+      typography:{
+        fontHeading:t.head,fontBody:t.body,scaleRatio:t.ratio,tracking:t.track,
+        weight:{heading:t.hw,body:t.bw},
+        size:{display:{desktop:m.displayD,mobile:m.displayM},lead:{desktop:m.leadD,mobile:m.leadM},h3:m.h3,h4:m.h4,body:{desktop:m.bodyD,mobile:m.bodyM},small:{desktop:m.smallD,mobile:m.smallM}},
+        leading:{heading:{desktop:m.hlhD,mobile:m.hlhM},body:{desktop:m.blhD,mobile:m.blhM}}
+      },
+      spacing:{base:sp.unit,md:sp.s3,lg:sp.s5,xl:sp.s6,section:sp.hpad},
+      radius:{md:r.md,lg:r.lg,pill:r.pill}
+    };
+    return JSON.stringify(obj,null,2);
+  }
+  // tailwind
+  $('#exFile').textContent='tailwind.config.js';
+  return `/* ${t.name} × ${c.name} — paste into tailwind.config.js */
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        bg: '${c.bg}', surface: '${c.surface}', 'surface-alt': '${c.surfaceAlt}',
+        ink: '${c.text}', muted: '${c.muted}', line: '${c.border}',
+        primary: '${c.primary}', accent: '${c.accent}',
+      },
+      fontFamily: {
+        heading: [${JSON.stringify(t.head)}, 'serif'],
+        body: [${JSON.stringify(t.body)}, 'sans-serif'],
+      },
+      fontSize: {
+        display: ['${m.displayD}px', { lineHeight: '${m.hlhD}' }],
+        lead: ['${m.leadD}px', { lineHeight: '${m.blhD}' }],
+        base: ['${m.bodyD}px', { lineHeight: '${m.blhD}' }],
+      },
+      borderRadius: { md: '${r.md}px', lg: '${r.lg}px' },
+      letterSpacing: { heading: '${t.track}' },
+    },
+  },
+};`;
+}
+function renderExport(){ $('#exCode').textContent=buildExport(); }
+
+/* ---------- INTERACTION ---------- */
+function refresh(){ applyPreview(); renderRail(); renderSheet(); if($('#view-export').classList.contains('active')) renderExport(); }
+
+function setView(v){
+  $$('.view').forEach(x=>x.classList.remove('active'));
+  $('#view-'+v).classList.add('active');
+  $$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  if(v==='export') renderExport();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1600); }
+
+function cycle(key,arrLen,dir){ state[key]=(state[key]+dir+arrLen)%arrLen; refresh(); }
+
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]');
+  if(a){const act=a.dataset.act;
+    if(act==='type-prev')cycle('type',TYPES.length,-1);
+    if(act==='type-next')cycle('type',TYPES.length,1);
+    if(act==='color-prev')cycle('color',PALETTES.length,-1);
+    if(act==='color-next')cycle('color',PALETTES.length,1);
+    if(act==='type-browse')setView('type');
+    if(act==='color-browse')setView('color');
+    return;
+  }
+  const seg=e.target.closest('[data-group]');
+  if(seg){ state[seg.dataset.group]=+seg.dataset.idx; refresh(); return; }
+  const tab=e.target.closest('.tab');
+  if(tab){ setView(tab.dataset.view); return; }
+  const ge=e.target.closest('#goExport');
+  if(ge){ setView('export'); return; }
+  const dev=e.target.closest('#deviceSeg button');
+  if(dev){ state.device=dev.dataset.d; $$('#deviceSeg button').forEach(b=>b.classList.toggle('on',b===dev)); applyPreview(); renderSheet(); return; }
+  const ut=e.target.closest('[data-use-type]');
+  if(ut){ state.type=+ut.dataset.useType; refresh(); setView('compose'); toast('Type set applied'); return; }
+  const uc=e.target.closest('[data-use-color]');
+  if(uc){ state.color=+uc.dataset.useColor; refresh(); setView('compose'); toast('Color scheme applied'); return; }
+  const chip=e.target.closest('[data-chip]');
+  if(chip){
+    if(chip.dataset.chip==='type'){ typeFilter=chip.dataset.val; renderChips('#typeChips',typeVibes,typeFilter,'type'); renderTypeGrid(); }
+    else { colorFilter=chip.dataset.val; renderChips('#colorChips',colorVibes,colorFilter,'color'); renderColorGrid(); }
+    return;
+  }
+});
+
+$('#randomize').addEventListener('click',()=>{
+  const rnd=n=>Math.floor(Math.random()*n);
+  state.type=rnd(TYPES.length); state.color=rnd(PALETTES.length);
+  state.space=rnd(SPACING.length); state.radius=rnd(RADIUS.length); state.btn=rnd(BUTTONS.length);
+  refresh(); toast('Shuffled a new direction');
+});
+$('#typeSearch').addEventListener('input',e=>{typeQ=e.target.value;renderTypeGrid();});
+$('#colorSearch').addEventListener('input',e=>{colorQ=e.target.value;renderColorGrid();});
+
+$('#exSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;exFormat=b.dataset.f;$$('#exSeg button').forEach(x=>x.classList.toggle('on',x===b));renderExport();});
+$('#copyBtn').addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText($('#exCode').textContent); toast('Copied to clipboard'); }
+  catch{ const r=document.createRange();r.selectNode($('#exCode'));getSelection().removeAllRanges();getSelection().addRange(r);document.execCommand('copy');getSelection().removeAllRanges();toast('Copied'); }
+});
+$('#dlBtn').addEventListener('click',()=>{
+  const name=$('#exFile').textContent;
+  const blob=new Blob([$('#exCode').textContent],{type:'text/plain'});
+  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);toast('Downloaded '+name);
+});
+
+/* ---------- INIT ---------- */
+$('#pv').innerHTML=PV_HTML;
+$('#brandCount').textContent=TYPES.length+' type · '+PALETTES.length+' color';
+$('#tabT').textContent=TYPES.length;
+$('#tabC').textContent=PALETTES.length;
+renderChips('#typeChips',typeVibes,typeFilter,'type');
+renderChips('#colorChips',colorVibes,colorFilter,'color');
+renderTypeGrid();
+renderColorGrid();
+refresh();
+
+</script>
+</body>
+</html>
